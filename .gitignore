@@ -213,3 +213,4 @@ ModelManifest.xml
 
 # Client-side artifacts
 **/wwwroot/lib/
+**/wwwroot/css/
