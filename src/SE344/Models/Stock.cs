@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace SE344.Models
 {
@@ -11,7 +9,7 @@ namespace SE344.Models
     /// </summary>
     public class Stock
     {
-        public Stock(string identifier, Currency currentPrice)
+        public Stock(string identifier, decimal currentPrice)
         {
             this.identifier = identifier;
             this.currentPrice = currentPrice;
@@ -20,7 +18,7 @@ namespace SE344.Models
         }
 
         private readonly string identifier;
-        private Currency currentPrice;
+        private decimal currentPrice;
         private string note;
         private List<StockTransaction> transactions;
 
@@ -35,7 +33,7 @@ namespace SE344.Models
         /// <summary>
         /// The current price of this stock
         /// </summary>
-        public Currency CurrentPrice
+        public decimal CurrentPrice
         {
             get { return currentPrice; }
         }
@@ -57,22 +55,22 @@ namespace SE344.Models
         /// <summary>
         /// The number of shares currently owned by the user
         /// </summary>
-        public double CurrentlyOwned
+        public int CurrentlyOwned
         {
             get
             {
-                return transactions.Select(_.NumShares).Sum;
+                return transactions.Select(x => x.NumShares).Sum();
             }
         }
 
         /// <summary>
         /// The profit made by this user
         /// </summary>
-        public double Profit
+        public decimal Profit
         {
             get 
             {
-                return transactions.Select(_.TotalTransactionPrice).Sum;
+                return transactions.Select(x => x.TotalTransactionPrice).Sum();
             }
         }
     }

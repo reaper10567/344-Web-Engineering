@@ -8,7 +8,7 @@ namespace SE344.Models
     /// </summary>
     public class StockTransaction
     {
-        public StockTransaction(DateTime transactionDate, Currency priceAtTransactionTime, int numShares)
+        public StockTransaction(DateTime transactionDate, decimal priceAtTransactionTime, int numShares)
         {
             this.transactionDate = transactionDate;
             this.priceAtTransactionTime = priceAtTransactionTime;
@@ -16,7 +16,7 @@ namespace SE344.Models
         }
 
         private readonly DateTime transactionDate;
-        private readonly Currency priceAtTransactionTime;
+        private readonly decimal priceAtTransactionTime;
         private readonly int numShares;
         
         /// <summary>
@@ -30,7 +30,7 @@ namespace SE344.Models
         /// <summary>
         /// The stock's price at the datetime that the transaction took place
         /// </summary>
-        public Currency PriceAtTransactionTime
+        public decimal PriceAtTransactionTime
         {
             get { return this.priceAtTransactionTime; }
         }
@@ -47,7 +47,7 @@ namespace SE344.Models
         /// <summary>
         /// The cost of the transaction
         /// </summary>
-        public Currency TotalTransactionPrice
+        public decimal TotalTransactionPrice
         {
             get { return (this.PriceAtTransactionTime * this.NumShares); }
         }
