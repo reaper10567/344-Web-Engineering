@@ -11,14 +11,16 @@ namespace SE344.Models
     /// </summary>
     public class Stock
     {
-        public Stock(string identifier)
+        public Stock(string identifier, Currency currentPrice)
         {
             this.identifier = identifier;
-            this.note = ""; //TODO: get from database
-            this.transactions = new List<StockTransaction>(); // TOOD: populate from database
+            this.currentPrice = currentPrice;
+            this.note = "";
+            this.transactions = new List<StockTransaction>();
         }
 
         private readonly string identifier;
+        private Currency currentPrice;
         private string note;
         private List<StockTransaction> transactions;
 
@@ -33,13 +35,9 @@ namespace SE344.Models
         /// <summary>
         /// The current price of this stock
         /// </summary>
-        public double CurrentPrice
+        public Currency CurrentPrice
         {
-            get
-            {
-                // TODO: get from api
-                // ???: possibly cache?
-            }
+            get { return currentPrice; }
         }
 
         /// <summary>
