@@ -11,46 +11,31 @@ namespace SE344.Models
     {
         public Stock(string identifier, decimal currentPrice)
         {
-            this.identifier = identifier;
-            this.currentPrice = currentPrice;
-            this.note = "";
-            this.transactions = new List<StockTransaction>();
+            Identifier = identifier;
+            CurrentPrice = currentPrice;
         }
-
-        private readonly string identifier;
-        private decimal currentPrice;
-        private string note;
-        private List<StockTransaction> transactions;
 
         /// <summary>
         /// The stock's four-letter identifier
         /// </summary>
-        public string Identifier
-        {
-            get { return identifier; }
-        }
+        public string Identifier { get; }
 
         /// <summary>
         /// The current price of this stock
         /// </summary>
-        public decimal CurrentPrice
-        {
-            get { return currentPrice; }
-        }
+        public decimal CurrentPrice { get; }
 
         /// <summary>
         /// A set of transactions made by the user relating to this stock.
+        /// 
+        /// List is mutable. To change this field's value, mutate the list returned by the accessor.
         /// </summary>
-        public List<StockTransaction> Transactions
-        {
-            get { return transactions; }
-        }
+        public List<StockTransaction> Transactions { get; } = new List<StockTransaction>();
 
-        public string Note
-        {
-            get { return this.note; }
-            set { this.note = value; }
-        }
+        /// <summary>
+        /// A user-provided note about the stock.
+        /// </summary>
+        public string Note { get; set; } = "";
 
         /// <summary>
         /// The number of shares currently owned by the user
@@ -59,7 +44,7 @@ namespace SE344.Models
         {
             get
             {
-                return transactions.Select(x => x.NumShares).Sum();
+                return Transactions.Select(x => x.NumShares).Sum();
             }
         }
 
@@ -70,7 +55,7 @@ namespace SE344.Models
         {
             get 
             {
-                return transactions.Select(x => x.TotalTransactionPrice).Sum();
+                return Transactions.Select(x => x.TotalPrice).Sum();
             }
         }
     }

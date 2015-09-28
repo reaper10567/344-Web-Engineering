@@ -8,48 +8,35 @@ namespace SE344.Models
     /// </summary>
     public class StockTransaction
     {
-        public StockTransaction(DateTime transactionDate, decimal priceAtTransactionTime, int numShares)
+        public StockTransaction(DateTime transactionDate, decimal pricePerShare, int numShares)
         {
-            this.transactionDate = transactionDate;
-            this.priceAtTransactionTime = priceAtTransactionTime;
-            this.numShares = numShares;
+            TransactionDate = transactionDate;
+            PricePerShare = pricePerShare;
+            NumShares = numShares;
         }
-
-        private readonly DateTime transactionDate;
-        private readonly decimal priceAtTransactionTime;
-        private readonly int numShares;
         
         /// <summary>
         /// The date and time that transaction took place
         /// </summary>
-        public DateTime TransactionDate
-        {
-            get { return this.transactionDate; }
-        }
+        public DateTime TransactionDate { get; }
         
         /// <summary>
         /// The stock's price at the datetime that the transaction took place
         /// </summary>
-        public decimal PriceAtTransactionTime
-        {
-            get { return this.priceAtTransactionTime; }
-        }
+        public decimal PricePerShare { get; }
         
         /// <summary>
         /// The number of shares bought at the time of the transaction.
         /// Will be a negative number if the transaction was a sale instead of a purchase
         /// </summary>
-        public int NumShares
-        {
-            get { return this.numShares; }
-        }
+        public int NumShares { get; }
         
         /// <summary>
         /// The cost of the transaction
         /// </summary>
-        public decimal TotalTransactionPrice
+        public decimal TotalPrice
         {
-            get { return (this.PriceAtTransactionTime * this.NumShares); }
+            get { return (this.PricePerShare * this.NumShares); }
         }
     }
 }
