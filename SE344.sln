@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SE344", "src\SE344\SE344.xproj", "{FC7DCFCE-2C45-49A7-A3AC-E4A92DDE6FFF}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SE344Test", "src\SE344Test\SE344Test.xproj", "{32697776-A79D-42DF-99AF-761B11AACC30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,11 +25,16 @@ Global
 		{FC7DCFCE-2C45-49A7-A3AC-E4A92DDE6FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC7DCFCE-2C45-49A7-A3AC-E4A92DDE6FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC7DCFCE-2C45-49A7-A3AC-E4A92DDE6FFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32697776-A79D-42DF-99AF-761B11AACC30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32697776-A79D-42DF-99AF-761B11AACC30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32697776-A79D-42DF-99AF-761B11AACC30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32697776-A79D-42DF-99AF-761B11AACC30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FC7DCFCE-2C45-49A7-A3AC-E4A92DDE6FFF} = {925564B2-E36A-41AA-8CB3-D86DCF6DFCBE}
+		{32697776-A79D-42DF-99AF-761B11AACC30} = {925564B2-E36A-41AA-8CB3-D86DCF6DFCBE}
 	EndGlobalSection
 EndGlobal
