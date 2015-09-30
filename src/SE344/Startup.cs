@@ -63,6 +63,9 @@ namespace SE344
             {
                 options.AppId = Configuration["Authentication:Facebook:AppId"];
                 options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                options.UserInformationEndpoint = "https://graph.facebook.com/v2.2/me?fields=id,email,name,link";
+                options.Scope.Add("email");
+                options.Scope.Add("user_friends");
             });
 
             services.Configure<MicrosoftAccountAuthenticationOptions>(options =>
@@ -114,7 +117,7 @@ namespace SE344
 
             // Add authentication middleware to the request pipeline. You can configure options such as Id and Secret in the ConfigureServices method.
             // For more information see http://go.microsoft.com/fwlink/?LinkID=532715
-            // app.UseFacebookAuthentication();
+             app.UseFacebookAuthentication();
             // app.UseGoogleAuthentication();
             // app.UseMicrosoftAccountAuthentication();
             // app.UseTwitterAuthentication();
