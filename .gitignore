@@ -214,3 +214,7 @@ ModelManifest.xml
 # Client-side artifacts
 **/wwwroot/lib/
 **/wwwroot/css/
+**/*.min.*
+
+# ASP.NET properties
+Properties/
