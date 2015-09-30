@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0-*",
+  "description": "SE344 Unit Tests",
+  "authors": [ "Kai" ],
+  "tags": [ "test" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "dependencies": {
+    "xunit": "2.1.0",
+    "xunit.runner.dnx": "2.1.0-beta5a-build188"
+  },
+  "commands": {
+    "test": "xunit.runner.dnx"
+  },
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+        "SE344": "1.0.0-*"
+      }
+    }
+  }
+}
