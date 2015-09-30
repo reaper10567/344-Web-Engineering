@@ -215,3 +215,6 @@ ModelManifest.xml
 **/wwwroot/lib/
 **/wwwroot/css/
 **/*.min.*
+
+# ASP.NET properties
+Properties/

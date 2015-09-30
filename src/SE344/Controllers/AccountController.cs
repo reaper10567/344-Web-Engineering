@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
@@ -176,11 +176,31 @@ namespace SE344.Controllers
             }
             else
             {
-                // If the user does not have an account, then ask the user to create an account.
-                ViewData["ReturnUrl"] = returnUrl;
-                ViewData["LoginProvider"] = info.LoginProvider;
+                // If the user does not have an account, then create an account.
                 var email = info.ExternalPrincipal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
+                var user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    Name = info.ExternalPrincipal.FindFirstValue("urn:facebook:name")
+                };
+
+                var identityResult = await _userManager.CreateAsync(user);
+                if (identityResult.Succeeded)
+                {
+                    identityResult = await _userManager.AddLoginAsync(user, info);
+                    if (identityResult.Succeeded)
+                    {
+                        // Add user's Facebook name as a claim
+                        await _userManager.AddClaimAsync(user, new Claim("facebook:name", user.Name));
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
+                AddErrors(identityResult);
+
+                // Error creating user
+                return View("ExternalLoginFailure");
             }
         }
 
