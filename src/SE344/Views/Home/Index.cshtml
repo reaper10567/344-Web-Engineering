@@ -2,14 +2,11 @@
     ViewData["Title"] = "Hodepodge site of the Internet";
 }
 
-<div id="ChatStuff" style="float: right">
-    <p>Lorum Ipsum</p>
-</div>
-<div id="FacebookFeed" style="text-align: center;">
-    <p>Lorum Ipsum</p>
-</div>
-
-<div id="content" style="text-align: center; padding-top: 50px">
-    <a asp-controller="Calendar" asp-action="Index" class="btn btn-default btn-default">Calendar Page</a>
-    <a asp-controller="Stocks" asp-action="Index" class="btn btn-default btn-default">Stocks Page</a>
+<div class="row">
+    <div class="col-sm-4">
+        Stocks display here
+    </div>
+    <div class="col-sm-8">
+        Facebook timeline here
+    </div>
 </div>
