@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>@ViewData["Title"] - SE344</title>
 
+        @RenderSection("stylesheets", required: false)
+
         <environment names="Development">
             <link rel="stylesheet" href="~/lib/bootstrap-touch-carousel/dist/css/bootstrap-touch-carousel.css" />
             <link rel="stylesheet" href="~/css/site.css" />
@@ -30,6 +32,8 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-controller="Stocks" asp-action="Index">Stocks</a></li>
+                        <li><a asp-controller="Calendar" asp-action="Index">Calendar</a></li>
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
