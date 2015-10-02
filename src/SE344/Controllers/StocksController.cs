@@ -9,11 +9,9 @@ namespace SE344.Controllers
     public class StocksController : Controller
     {
         
-        public IActionResult stocks()
+        public IActionResult Index()
         {
             return View();
         }
     }
 }
-
-

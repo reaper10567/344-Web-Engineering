@@ -8,7 +8,7 @@ namespace SE344.Controllers
 {
     public class CalendarController : Controller
     {
-        public IActionResult Calendar()
+        public IActionResult Index()
         {
             return View();
         }
