@@ -118,19 +118,6 @@ namespace SE344
             // For more information see http://go.microsoft.com/fwlink/?LinkID=532715
              app.UseFacebookAuthentication();
 
-            // Authentication check and redirect to login page.
-//            app.Use(async (context, next) =>
-//            {
-//                // Allow /Account to pass through to be able to log in
-//                if (!context.User.Identity.IsAuthenticated && !context.Request.Path.StartsWithSegments(new PathString("/Account")))
-//                {
-//                    // The cookie middleware will intercept this 401 and redirect to /login
-//                    await context.Authentication.ChallengeAsync();
-//                    return;
-//                }
-//                await next();
-//            });
-
             // Use Session
             app.UseSession();
 
