@@ -1,13 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Stocks";
+    stocks = ViewData["stocks"] as List<Stocks>;
 }
 
 <div id="leftContent" style="float: left">
     <p>Lorum Ipsum</p>
 </div>
 <div id="centerContent" style="text-align: center">
-    <p>Lorum Ipsum</p>
-</div>
-<div id="rightContent" style="float: right">
-    <p>Lorum Ipsum</p>
+    @for(int i = 0; i < min(stocks.Count, 5); i++) {
+        <div class="stockInfo">
+            <div class="identifier">@stocks[i].Identifier</div>
+            <div class="currentPrice">@stocks[i].CurrentPrice</div>
+            <!-- div class="currentlyOwned">@stocks[i].CurrentlyOwned</div -->
+        </div>
+    }
 </div>
