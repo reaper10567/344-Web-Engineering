@@ -3,7 +3,7 @@ var webdriver = require('selenium-webdriver'),
 	until = require('selenium-webdriver').until;
 	
 var driver = new webdriver.Builder()
-	.forBrowser('firefox');
+	.forBrowser('firefox')
 	.build();
 
 driver.get('http://vm344f.se.rit.edu/R1');
