@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Authentication.Facebook;
-using Microsoft.AspNet.Authentication.Google;
-using Microsoft.AspNet.Authentication.MicrosoftAccount;
-using Microsoft.AspNet.Authentication.Twitter;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics.Entity;
 using Microsoft.AspNet.Hosting;
@@ -66,16 +60,21 @@ namespace SE344
                 options.UserInformationEndpoint = "https://graph.facebook.com/v2.2/me?fields=id,email,name,link";
                 options.Scope.Add("email");
                 options.Scope.Add("user_friends");
-            });
-
-            services.Configure<MicrosoftAccountAuthenticationOptions>(options =>
-            {
-                options.ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"];
-                options.ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"];
+                options.SaveTokensAsClaims = true;
             });
 
             // Add MVC services to the services container.
             services.AddMvc();
+
+            // Caching for sessions
+            services.AddCaching();
+
+            // Configure sessions
+            services.AddSession();
+            services.ConfigureSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(4);
+            });
 
             // Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
             // You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
@@ -118,9 +117,9 @@ namespace SE344
             // Add authentication middleware to the request pipeline. You can configure options such as Id and Secret in the ConfigureServices method.
             // For more information see http://go.microsoft.com/fwlink/?LinkID=532715
              app.UseFacebookAuthentication();
-            // app.UseGoogleAuthentication();
-            // app.UseMicrosoftAccountAuthentication();
-            // app.UseTwitterAuthentication();
+
+            // Use Session
+            app.UseSession();
 
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>
