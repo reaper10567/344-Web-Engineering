@@ -77,11 +77,13 @@ namespace SE344.Controllers
 */
         #endregion
 
-        [HttpGet]
+        // Theoretically, this should be GET, but I'm not sure whether ASP.NET supports get forms
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SearchStocks(String id)
+        public async Task<IActionResult> SearchStocks([FromBody] string symbol)
         {
-            ViewData["result"] = CreateStock(id);
+			ViewData["symbol"] = symbol;
+            ViewData["result"] = await CreateStock(symbol);
             return View();
         }
 

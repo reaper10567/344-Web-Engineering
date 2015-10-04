@@ -1,13 +1,28 @@
 ﻿@{
     ViewData["Title"] = "Stocks";
+    symbol = ViewData["symbol"] as String;
+    stock  = ViewData["result"] as Stock;
 }
 
 <div id="leftContent" style="float: left">
-    <p>Lorum Ipsum</p>
 </div>
 <div id="centerContent" style="text-align: center">
-    <p>Lorum Ipsum</p>
-</div>
-<div id="rightContent" style="float: right">
-    <p>Lorum Ipsum</p>
+    <div class="tabs">
+        <a asp-controller="Stocks" asp-action="Index">My Stocks</a>
+        <a asp-controller="Stocks" asp-action="SearchStocks">Search</a>
+    </div>
+    <form asp-controller="Stocks" asp-action="SearchStocks" method="get" class="form-horizontal" role="form">
+        <div>
+            <label for="symbol">Search: </label>
+            <input type="text" name="symbol" placeholder="ticker symbol" required="required" size="6" value="@symbol" />
+        </div>
+        <button type="submit" class="btn btn-default" name="submit">Submit</button>
+    </form>
+    @if(null != symbol) {
+        <div class="stockInfo">
+            <div class="identifier">@stock.Identifier</div>
+            <div class="currentPrice">@stock.CurrentPrice</div>
+            <!-- div class="currentlyOwned">@stock.CurrentlyOwned</div -->
+        </div>
+    }
 </div>

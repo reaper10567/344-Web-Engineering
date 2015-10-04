@@ -1,12 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Stocks";
-    stocks = ViewData["stocks"] as List<Stocks>;
+    stocks = ViewData["stocks"] as List<Stock>;
 }
 
 <div id="leftContent" style="float: left">
-    <p>Lorum Ipsum</p>
 </div>
 <div id="centerContent" style="text-align: center">
+    <div class="tabs">
+        <a asp-controller="Stocks" asp-action="Index">My Stocks</a>
+        <a asp-controller="Stocks" asp-action="SearchStocks">Search</a>
+    </div>
     @for(int i = 0; i < min(stocks.Count, 5); i++) {
         <div class="stockInfo">
             <div class="identifier">@stocks[i].Identifier</div>
