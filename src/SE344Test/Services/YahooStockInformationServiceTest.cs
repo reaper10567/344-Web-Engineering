@@ -1,17 +1,19 @@
 using System;
-using SE344.Models;
 using SE344.Services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SE344Test.Services
 {
     public class YahooStockInformationServiceTest
     {
         private readonly YahooStockInformationService _stockInfo;
+        private readonly ITestOutputHelper _output;
 
-        public YahooStockInformationServiceTest()
+        public YahooStockInformationServiceTest(ITestOutputHelper output)
         {
             _stockInfo = new YahooStockInformationService();
+            _output = output;
         }
 
         [Theory]
@@ -20,27 +22,28 @@ namespace SE344Test.Services
         [InlineData("MSFT")]
         [InlineData("GOOG")]
         [InlineData("F")]
-        public void CurrentPriceShouldNotErrorForValidId(string id)
+        public async void CurrentPriceShouldNotErrorForValidId(string id)
         {
-            Assert.DoesNotThrow(() => _stockInfo.currentPrice(id));
-            Assert.InRange(0, 10000d, _stockInfo.currentPrice(id));
+            var price = await _stockInfo.CurrentPrice(id);
+            _output.WriteLine("Current price of {0} is {1}", id, price);
+            Assert.InRange(price, 0, 10000m);
         }
 
         [Theory]
         [InlineData("1234")]
         [InlineData("\"")]
         [InlineData(";")]
-        public void CurrentPriceShouldErrorForInvalidId(string id)
+        public async void CurrentPriceShouldErrorForInvalidId(string id)
         {
-            Assert.Throws<FormatException>(() => _stockInfo.currentPrice(id));
+            await Assert.ThrowsAsync<FormatException>(async () => await _stockInfo.CurrentPrice(id));
         }
 
         [Theory]
         [InlineData("XXXX")]
-        public void CurrentPriceShouldErrorForUnusedId(string id)
+        public async void CurrentPriceShouldErrorForUnusedId(string id)
         {
             //TODO: Provide more meaningful error than "number format exception"
-            Assert.Throws<FormatException>(() => _stockInfo.currentPrice(id));
+            await Assert.ThrowsAsync<FormatException>(async () => await _stockInfo.CurrentPrice(id));
         }
     }
 }

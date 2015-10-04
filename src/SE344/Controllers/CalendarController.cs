@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 
 namespace SE344.Controllers
 {
+    [Authorize]
     public class CalendarController : Controller
     {
-        public IActionResult Calendar()
+        public IActionResult Index()
         {
             return View();
         }

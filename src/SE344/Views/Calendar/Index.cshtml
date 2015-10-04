@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Calendar";
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div id="calendarView"></div>
+    </div>
+</div>
+
+
+@section Stylesheets {
+    @{ await Html.RenderPartialAsync("_CalendarStylesheetsPartial"); }
+}
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_CalendarScriptsPartial"); }
+
+    <script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                $('#calendarView').fullCalendar({
+
+                });
+            });
+        })(jQuery);
+    </script>
+}
