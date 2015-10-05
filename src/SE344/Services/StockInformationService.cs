@@ -99,18 +99,46 @@ namespace SE344.Services
                 symbol +
                 "%22)%0A%09%09&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
 
-            var res = await new HttpClient().GetStringAsync(endpoint);
-
-            var quote = JObject.Parse(res)["query"]["results"]["quote"];
-            var stockModel = new SearchViewModel
+            SearchViewModel stockModel;
+            try
             {
-                Symbol = (string) quote["symbol"],
-                CurrentPrice = (decimal?) quote["Ask"],
-                DaysHigh = (decimal?) quote["DaysHigh"],
-                DaysLow = (decimal?) quote["DaysLow"],
-                YearsHigh = (decimal?) quote["YearHigh"],
-                YearsLow = (decimal?) quote["YearLow"]
-            };
+                var res = await new HttpClient().GetStringAsync(endpoint);
+
+                var quote = JObject.Parse(res)["query"]["results"]["quote"];
+                stockModel = new SearchViewModel
+                {
+                    Symbol = (string) quote["symbol"],
+                    CurrentPrice = (decimal?) quote["Ask"],
+                    DaysHigh = (decimal?) quote["DaysHigh"],
+                    DaysLow = (decimal?) quote["DaysLow"],
+                    YearsHigh = (decimal?) quote["YearHigh"],
+                    YearsLow = (decimal?) quote["YearLow"]
+                };
+            }
+            catch (System.Net.Http.HttpRequestException e)
+            {
+                stockModel = new SearchViewModel
+                {
+                    Symbol = "",
+                    CurrentPrice = null,
+                    DaysHigh = null,
+                    DaysLow = null,
+                    YearsHigh = null,
+                    YearsLow = null
+                };
+            }
+            catch (System.InvalidOperationException e)
+            {
+                stockModel = new SearchViewModel
+                {
+                    Symbol = "",
+                    CurrentPrice = null,
+                    DaysHigh = null,
+                    DaysLow = null,
+                    YearsHigh = null,
+                    YearsLow = null
+                };
+            }
 
             return stockModel;
         }
@@ -133,10 +161,33 @@ namespace SE344.Services
                 end.Date.ToString("u") +
                 "%22&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
 
-            var res = await new HttpClient().GetStringAsync(endpoint);
+            string res;
+            try
+            {
+                res = await new HttpClient().GetStringAsync(endpoint);
+            }
+            catch (System.Net.Http.HttpRequestException e)
+            {
+                throw new UnknownTickerSymbolException(symbol, e);
+            }
 
-            var history = JObject.Parse(res)["query"]["results"]["quote"];
-            return history.ToString();
+            try
+            {
+                var history = JObject.Parse(res)["query"]["results"]["quote"];
+                return history.ToString();
+            }
+            catch (System.InvalidOperationException e)
+            {
+                throw new UnknownTickerSymbolException(symbol, e);
+            }
+        }
+    }
+    
+    public class UnknownTickerSymbolException : Exception
+    {
+        public UnknownTickerSymbolException(string symbol, Exception cause)
+                           : base("Unknown symbol: " + symbol, cause)
+        {
         }
     }
 }

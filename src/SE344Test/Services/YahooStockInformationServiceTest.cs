@@ -98,7 +98,7 @@ namespace SE344Test.Services
         [InlineData("XXXX")]
         public async void GetHistoryInfoAsyncShouldErrorValuesForInvalidId(string id)
         {
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _stockInfo.GetHistoryInfoAsync(id, DateTime.Now.AddDays(-7), DateTime.Now));
+            await Assert.ThrowsAsync<UnknownTickerSymbolException>(async () => await _stockInfo.GetHistoryInfoAsync(id, DateTime.Now.AddDays(-7), DateTime.Now));
        }
     }
 }
