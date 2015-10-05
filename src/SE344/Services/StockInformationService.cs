@@ -105,11 +105,11 @@ namespace SE344.Services
             var stockModel = new SearchViewModel
             {
                 Symbol = (string) quote["symbol"],
-                CurrentPrice = (decimal) quote["Ask"],
-                DaysHigh = (decimal) quote["DaysHigh"],
-                DaysLow = (decimal) quote["DaysLow"],
-                YearsHigh = (decimal) quote["YearHigh"],
-                YearsLow = (decimal) quote["YearLow"]
+                CurrentPrice = (decimal?) quote["Ask"],
+                DaysHigh = (decimal?) quote["DaysHigh"],
+                DaysLow = (decimal?) quote["DaysLow"],
+                YearsHigh = (decimal?) quote["YearHigh"],
+                YearsLow = (decimal?) quote["YearLow"]
             };
 
             return stockModel;
