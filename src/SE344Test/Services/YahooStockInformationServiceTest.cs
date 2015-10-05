@@ -87,8 +87,8 @@ namespace SE344Test.Services
         public async void GetHistoryInfoAsyncShouldNotErrorForValidId(string id)
         {
             var result = JArray.Parse(await _stockInfo.GetHistoryInfoAsync(id, DateTime.Now.AddDays(-7), DateTime.Now));
-            Assert.InRange((decimal) result["Close"], 0, 10000m);
-            Assert.InRange((decimal) result["Low"], 0, 10000m);
+            Assert.InRange((decimal) result[0]["Close"], 0, 10000m);
+            Assert.InRange((decimal) result[0]["Low"], 0, 10000m);
         }
 
         [Theory]
@@ -98,7 +98,7 @@ namespace SE344Test.Services
         [InlineData("XXXX")]
         public async void GetHistoryInfoAsyncShouldErrorValuesForInvalidId(string id)
         {
-            await Assert.ThrowsAsync<FormatException>(async () => await _stockInfo.GetHistoryInfoAsync(id, DateTime.Now.AddDays(-7), DateTime.Now));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _stockInfo.GetHistoryInfoAsync(id, DateTime.Now.AddDays(-7), DateTime.Now));
        }
     }
 }
