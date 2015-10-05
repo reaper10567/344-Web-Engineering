@@ -8,9 +8,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
+using Newtonsoft.Json.Linq;
 using SE344.Models;
 using SE344.Services;
 using SE344.ViewModels.Account;
+using SE344.ViewModels.Stock;
 
 namespace SE344.Controllers
 {
@@ -22,12 +24,10 @@ namespace SE344.Controllers
 
 
         [HttpGet]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index()
         {
             var allIds = stockHistory.getKnownIdentifiers();
-            var allStocks = allIds.Select(CreateStock);
-            allStocks.OrderBy(async (a) => (await a).CurrentlyOwned);
+            var allStocks = await Task.WhenAll(allIds.Select(stockInfo.GetQuoteAsync));
 
             ViewData["stocks"] = allStocks;
             return View();
@@ -78,13 +78,32 @@ namespace SE344.Controllers
         #endregion
 
         // Theoretically, this should be GET, but I'm not sure whether ASP.NET supports get forms
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchStocks([FromBody] string symbol)
+        [HttpGet]
+        public async Task<IActionResult> SearchStocks(string symbol)
         {
+            var model = new SearchViewModel
+            {
+                Symbol = symbol
+            };
+
+            if (symbol == null)
+            {
+                return View(model);
+            }
+
 			ViewData["symbol"] = symbol;
-            ViewData["result"] = await CreateStock(symbol);
-            return View();
+
+            // get a week of data
+            var history = JArray.Parse(await stockInfo.GetHistoryInfoAsync(symbol, DateTime.Now.AddDays(-7), DateTime.Now));
+            ViewData["ChartData"] = history;
+            ViewData["LowHighData"] = history.Select(t =>
+            {
+                var quote = (JObject) t;
+                return new JArray(decimal.Round((decimal) quote["Low"], 2), decimal.Round((decimal) quote["High"], 2));
+            });
+            model = await stockInfo.GetQuoteAsync(symbol);
+
+            return View(model);
         }
 
 
