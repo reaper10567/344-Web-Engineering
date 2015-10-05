@@ -1,0 +1,9 @@
+{
+  "name": "SE344Test",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "chromedriver": "^2.19.0",
+    "selenium-webdriver": "^2.47.0"
+  }
+}
