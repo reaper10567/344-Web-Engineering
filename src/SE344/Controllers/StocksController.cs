@@ -95,18 +95,24 @@ namespace SE344.Controllers
             try
             {
                 // get a week of data
-                var history = JArray.Parse(await stockInfo.GetHistoryInfoAsync(symbol, DateTime.Now.AddDays(-7), DateTime.Now));
+                var history = JArray.Parse(await stockInfo.GetHistoryInfoAsync(symbol, DateTime.Now.AddMonths(-1), DateTime.Now));
                 ViewData["ChartData"] = history;
                 ViewData["LowHighData"] = history.Select(t =>
                 {
                     var quote = (JObject) t;
-                    return new JArray(decimal.Round((decimal) quote["Low"], 2), decimal.Round((decimal) quote["High"], 2));
+                    return new JArray
+                    {
+                        decimal.Round((decimal) quote["Open"], 2),
+                        decimal.Round((decimal) quote["High"], 2),
+                        decimal.Round((decimal) quote["Low"], 2),
+                        decimal.Round((decimal) quote["Close"], 2)
+                    };
                 });
             }
             catch (UnknownTickerSymbolException e)
             {
-                ViewData["ChartData"] = "[]";
-                ViewData["LowHighData"] = "[]";
+                ViewData["ChartData"] = new JArray();
+                ViewData["LowHighData"] = new List<JArray>();
             }
             model = await stockInfo.GetQuoteAsync(symbol);
 
