@@ -8,6 +8,8 @@
     "jquery-validation": "1.11.1",
     "jquery-validation-unobtrusive": "3.2.2",
     "bootstrap-sass": "~3.3.5",
-    "fullcalendar": "~2.4.0"
+    "fullcalendar": "~2.4.0",
+    "highcharts-release": "~4.1.8",
+    "highstock-release": "~2.1.8"
   }
 }

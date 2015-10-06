@@ -1,0 +1,81 @@
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@model SE344.ViewModels.Stock.SearchViewModel
+@{
+    ViewData["Title"] = "Stocks";
+    var symbol = ViewData["symbol"] as string;
+    var chartData = (JArray) ViewData["ChartData"];
+    var lowHighData = (IEnumerable<JArray>) ViewData["LowHighData"];
+}
+
+<ul class="nav nav-tabs nav-justified">
+    <li>
+        <a asp-controller="Stocks" asp-action="Index">My Stocks</a>
+    </li>
+    <li class="active">
+        <a>Search</a>
+    </li>
+</ul>
+
+<form asp-controller="Stocks" asp-action="SearchStocks" method="get" class="form-inline pull-right" role="form">
+    <input type="text" id="symbol" class="form-control" name="symbol" placeholder="Ticker symbol" required="required" value="@symbol"/>
+    <button type="submit" class="btn btn-default" name="submit">Search</button>
+</form>
+<div class="clearfix"></div>
+
+@if (null != symbol)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            @Model.Symbol.ToUpper()
+        </div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>Ask Price:</dt>
+                <dd>$@Model.CurrentPrice</dd>
+
+                <dt>Day's High:</dt>
+                <dd>$@Model.DaysHigh</dd>
+
+                <dt>Day's Low:</dt>
+                <dd>$@Model.DaysLow</dd>
+
+                <dt>Yearly High:</dt>
+                <dd>$@Model.YearsHigh</dd>
+
+                <dt>Yearly Low:</dt>
+                <dd>$@Model.YearsLow</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div id="stockChart"></div>
+
+    @section Scripts {
+        <script src="~/lib/highstock-release/highstock.js"></script>
+        <script>
+        $(function() {
+            $('#stockChart').highcharts({
+                title: {
+                    text: 'Price History'
+                },
+                xAxis: {
+                    categories: JSON.parse('@Html.Raw(JsonConvert.SerializeObject(chartData.Reverse().Select(t => ((JObject)t)["Date"])))')
+                },
+                yAxis: {
+                    title: {
+                        text: 'Amount'
+                    }
+                },
+                series: [
+                    {
+                        type: 'candlestick',
+                        name: '@Model.Symbol.ToUpper()',
+                        data: JSON.parse('@Html.Raw(JsonConvert.SerializeObject(lowHighData))')
+                    }
+                ]
+            });
+        });
+        </script>
+    }
+}

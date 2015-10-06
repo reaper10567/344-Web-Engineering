@@ -1,11 +1,33 @@
-﻿@{
+﻿@using SE344.ViewModels.Stock
+@{
     ViewData["Title"] = "Hodepodge site of the Internet";
+    var stocks = (IEnumerable<SearchViewModel>) ViewData["Stocks"];
 }
 
 <div class="row">
     <div class="col-sm-4">
-        Stocks display here
+        @foreach (var stock in stocks.Take(5))
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @stock.Symbol.ToUpper()
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>Ask Price:</dt>
+                        <dd>$@stock.CurrentPrice</dd>
+
+                        <dt>Day's High:</dt>
+                        <dd>$@stock.DaysHigh</dd>
+
+                        <dt>Day's Low:</dt>
+                        <dd>$@stock.DaysLow</dd>
+                    </dl>
+                </div>
+            </div>
+        }
     </div>
+
     <div class="col-sm-8">
         Facebook timeline here
     </div>

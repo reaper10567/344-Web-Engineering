@@ -1,13 +1,45 @@
-﻿@{
+﻿@using SE344.ViewModels.Stock
+@{
     ViewData["Title"] = "Stocks";
+    var stocks = ViewData["stocks"] as IEnumerable<SearchViewModel>;
 }
 
-<div id="leftContent" style="float: left">
-    <p>Lorum Ipsum</p>
-</div>
-<div id="centerContent" style="text-align: center">
-    <p>Lorum Ipsum</p>
-</div>
-<div id="rightContent" style="float: right">
-    <p>Lorum Ipsum</p>
+<ul class="nav nav-tabs nav-justified">
+    <li class="active">
+        <a>My Stocks</a>
+    </li>
+    <li>
+        <a asp-controller="Stocks" asp-action="SearchStocks">Search</a>
+    </li>
+</ul>
+
+<div class="row">
+    @foreach (var stock in stocks.Take(5))
+    {
+        <div class="col-sm-6 col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @stock.Symbol.ToUpper()
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>Ask Price:</dt>
+                        <dd>$@stock.CurrentPrice</dd>
+
+                        <dt>Day's High:</dt>
+                        <dd>$@stock.DaysHigh</dd>
+
+                        <dt>Day's Low:</dt>
+                        <dd>$@stock.DaysLow</dd>
+
+                        <dt>Yearly High:</dt>
+                        <dd>$@stock.YearsHigh</dd>
+
+                        <dt>Yearly Low:</dt>
+                        <dd>$@stock.YearsLow</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    }
 </div>
