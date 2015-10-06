@@ -1,7 +1,9 @@
-﻿@using SE344.Models
+﻿@using Newtonsoft.Json.Linq
+@using SE344.ViewModels.Stock
 @{
     ViewData["Title"] = "Hodepodge site of the Internet";
     var stocks = (IEnumerable<Stock>) ViewData["Stocks"];
+    var feed = (JArray)ViewData["Feed"];
 }
 
 <div class="row">
@@ -29,6 +31,15 @@
     </div>
 
     <div class="col-sm-8">
-        Facebook timeline here
+        @foreach (var post in feed)
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">@Html.Raw(post["message"])</div>
+                <div class="panel-footer">
+                    <a href="@post["from"]["link"]">@post["from"]["name"]</a>
+                    <span class="pull-right text-muted">@post["created_time"]</span>
+                </div>
+            </div>
+        }
     </div>
 </div>

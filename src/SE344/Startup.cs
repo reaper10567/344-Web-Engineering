@@ -62,6 +62,8 @@ namespace SE344
                 options.UserInformationEndpoint = "https://graph.facebook.com/v2.2/me?fields=id,email,name,link";
                 options.Scope.Add("email");
                 options.Scope.Add("user_friends");
+                options.Scope.Add("user_posts");
+                options.Scope.Add("publish_actions");
                 options.SaveTokensAsClaims = true;
             });
 

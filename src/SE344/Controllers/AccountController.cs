@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
@@ -159,13 +158,26 @@ namespace SE344.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            // Add access_token to the list of claims for user
+            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (user != null)
+            {
+                var oldToken = (await _userManager.GetClaimsAsync(user)).ToList().Find(claim => claim.Type == "access_token");
+                var newToken = info.ExternalPrincipal.FindFirst(claim => claim.Type == "access_token");
+                if (oldToken != null)
+                {
+                    await _userManager.ReplaceClaimAsync(user, oldToken, newToken);
+                }
+                else
+                {
+                    await _userManager.AddClaimAsync(user, newToken);
+                }
+            }
+
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
             {
-                // Temporarily add access token to the current session
-                var accessToken = info.ExternalPrincipal.FindFirstValue("access_token");
-                Context.Session.SetString("facebook:access_token", accessToken);
                 return RedirectToLocal(returnUrl);
             }
             if (result.RequiresTwoFactor)
@@ -180,7 +192,7 @@ namespace SE344.Controllers
             {
                 // If the user does not have an account, then create an account.
                 var email = info.ExternalPrincipal.FindFirstValue(ClaimTypes.Email);
-                var user = new ApplicationUser
+                user = new ApplicationUser
                 {
                     UserName = email,
                     Email = email,
@@ -194,7 +206,14 @@ namespace SE344.Controllers
                     if (identityResult.Succeeded)
                     {
                         // Add user's Facebook name as a claim
-                        await _userManager.AddClaimAsync(user, new Claim("facebook:name", user.Name));
+                        await _userManager.AddClaimsAsync(
+                            user,
+                            new[]
+                            {
+                                new Claim("facebook:name", user.Name),
+                                info.ExternalPrincipal.FindFirst(claim => claim.Type == "access_token")
+                            });
+
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return RedirectToLocal(returnUrl);
                     }
