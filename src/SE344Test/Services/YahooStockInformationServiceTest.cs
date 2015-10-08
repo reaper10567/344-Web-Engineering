@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using SE344.Services;
+using SE344.Models;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -24,33 +25,10 @@ namespace SE344Test.Services
         [InlineData("MSFT")]
         [InlineData("GOOG")]
         [InlineData("F")]
-        public async void CurrentPriceShouldNotErrorForValidId(string id)
-        {
-            var price = await _stockInfo.CurrentPrice(id);
-            _output.WriteLine("Current price of {0} is {1}", id, price);
-            Assert.InRange(price, 0, 10000m);
-        }
-
-        [Theory]
-        [InlineData("1234")]
-        [InlineData("\"")]
-        [InlineData(";")]
-        [InlineData("XXXX")]
-        public async void CurrentPriceShouldErrorForInvalidId(string id)
-        {
-            await Assert.ThrowsAsync<FormatException>(async () => await _stockInfo.CurrentPrice(id));
-        }
-
-        [Theory]
-        [InlineData("YHOO")]
-        [InlineData("TWTR")]
-        [InlineData("MSFT")]
-        [InlineData("GOOG")]
-        [InlineData("F")]
         public async void GetQuoteAsyncShouldNotErrorForValidId(string id)
         {
-            var searchViewModel = await _stockInfo.GetQuoteAsync(id);
-            _output.WriteLine("Current price of {0} is {1}", searchViewModel.Symbol, searchViewModel.CurrentPrice);
+            var searchViewModel = await _stockInfo.GetQuoteAsync(new Stock(id));
+            _output.WriteLine("Current price of {0} is {1}", searchViewModel.Identifier, searchViewModel.CurrentPrice);
             _output.WriteLine("Day's range is {0} to {1}", searchViewModel.DaysLow, searchViewModel.DaysHigh);
             Assert.NotNull(searchViewModel.CurrentPrice);
             Assert.InRange((decimal) searchViewModel.CurrentPrice, 0, 10000m);
@@ -63,7 +41,7 @@ namespace SE344Test.Services
         [InlineData("XXXX")]
         public async void GetQuoteAsyncShouldReturnNullValuesForInvalidId(string id)
         {
-            var searchViewModel = await _stockInfo.GetQuoteAsync(id);
+            var searchViewModel = await _stockInfo.GetQuoteAsync(new Stock(id));
             Assert.Null(searchViewModel.CurrentPrice);
         }
 

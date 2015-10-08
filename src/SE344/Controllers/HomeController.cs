@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 using SE344.Services;
+using SE344.Models;
 
 namespace SE344.Controllers
 {
@@ -17,7 +18,7 @@ namespace SE344.Controllers
         public async Task<IActionResult> Index()
         {
             var allIds = _stockHistory.getKnownIdentifiers();
-            var allStocks = await Task.WhenAll(allIds.Select(_stockInfo.GetQuoteAsync));
+            var allStocks = await Task.WhenAll(allIds.Select(x => new Stock(x)).Select(_stockInfo.GetQuoteAsync));
 
             ViewData["Stocks"] = allStocks;
             return View();

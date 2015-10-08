@@ -12,7 +12,6 @@ using Newtonsoft.Json.Linq;
 using SE344.Models;
 using SE344.Services;
 using SE344.ViewModels.Account;
-using SE344.ViewModels.Stock;
 
 namespace SE344.Controllers
 {
@@ -27,7 +26,7 @@ namespace SE344.Controllers
         public async Task<IActionResult> Index()
         {
             var allIds = stockHistory.getKnownIdentifiers();
-            var allStocks = await Task.WhenAll(allIds.Select(stockInfo.GetQuoteAsync));
+            var allStocks = await Task.WhenAll(allIds.Select(x => new Stock(x)).Select(stockInfo.GetQuoteAsync));
 
             ViewData["stocks"] = allStocks;
             return View();
@@ -81,10 +80,7 @@ namespace SE344.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchStocks(string symbol)
         {
-            var model = new SearchViewModel
-            {
-                Symbol = symbol
-            };
+            var model = new Stock(symbol);
 
             if (symbol == null)
             {
@@ -114,25 +110,9 @@ namespace SE344.Controllers
                 ViewData["ChartData"] = new JArray();
                 ViewData["LowHighData"] = new List<JArray>();
             }
-            model = await stockInfo.GetQuoteAsync(symbol);
+            model = await stockInfo.GetQuoteAsync(model);
 
             return View(model);
-        }
-
-
-
-        private async Task<Stock> CreateStock(string id)
-        {
-            Stock retVal = new Stock(id, await stockInfo.CurrentPrice(id));
-            retVal.Transactions.AddRange(stockHistory.getTransactions(id));
-            // TODO: retVal.note = ???
-
-            return retVal;
-        }
-
-        private int CompareStockByCurrentHoldings(Stock a, Stock b)
-        {
-            return (a.CurrentPrice * a.CurrentlyOwned).CompareTo(b.CurrentPrice * b.CurrentlyOwned);
         }
     }
 }
