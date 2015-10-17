@@ -48,14 +48,32 @@ namespace SE344.Controllers
             ViewData["transactions"] = stockHistory.getTransactions();
             return View();
         }
-/*
-        //???: this is a different page, right?
+
+        // http://stackoverflow.com/questions/6775248/export-to-csv-from-mvc-controller-and-view-displays-csv-raw-data-on-page
         [HttpGet]
         public IActionResult HistoryCvs()
         {
-            return View();
-        }
+            var transactions = stockHistory.getTransactions();
 
+            // What? MVC? Why would ASP.NET allow that?
+            var retVal = new System.IO.MemoryStream();
+            {
+                var writer = new System.IO.StreamWriter(retVal);
+                writer.WriteLine("\"Ticker Symbol\",\"Datetime\",\"Price Per Share\",\"Num Shares\"");
+                foreach (var line in transactions.ToList())
+                {
+                    writer.WriteLine(string.Format("\"{0}\",\"{1}\",\"{2}\",\"{3}\"",
+                                line.Key, line.Value.TransactionDate,
+                                line.Value.PricePerShare, line.Value.NumShares
+                    ));
+                }
+                writer.Flush();
+            }
+            retVal.Seek(0, System.IO.SeekOrigin.Begin);
+
+            return File(retVal, "text/csv", "transactionHistory.csv");
+        }
+/*
         [HttpPost]
         public IActionResult ClearHistory()
         {
