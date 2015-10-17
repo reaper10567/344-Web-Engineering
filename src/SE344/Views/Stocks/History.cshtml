@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Stocks";
+    var transactions = ViewData["transactions"] as IEnumerable<KeyValuePair<string, StockTransaction>>;
+}
+<ul class="nav nav-tabs nav-justified">
+    <li>
+        <a asp-controller="Stocks" asp-action="Index">My Stocks</a>
+    </li>
+    <li class="active">
+        <a>History</a>
+    </li>
+    <li>
+        <a asp-controller="Stocks" asp-action="SearchStocks">Search</a>
+    </li>
+</ul>
+
+<table id="historyTable" class="table">
+    <!-- `table.table` I feel dirty... -->
+    <thead>
+        <tr>
+            <th>Stock</th>
+            <th>Date</th>
+            <th>Price per Share</th>
+            <th>Num Shares</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in transactions)
+        {
+            <tr>
+                <td>@t.Key</td>
+                <td>@t.Value.TransactionDate</td>
+                <td>@t.Value.PricePerShare</td>
+                <td>@t.Value.NumShares</td>
+                <td>@t.Value.TotalPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="historyActions" class="btn-group btn-group-vertical">
+    <!-- TODO: horizontal alignment on tall, skinny screens -->
+    <!-- TODO: Wireframe says that this should be to the right of the table -->
+    <a disabled class="btn btn-default">Import</a>
+    <a asp-controller="Stocks" asp-action="HistoryCvs" class="btn btn-default">Save</a>
+    <a disabled class="btn btn-default">Clear History</a>
+</div>

@@ -36,30 +36,27 @@ namespace SE344.Controllers
 /*
         // POST: /Stock/BuyStock
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Buy(Stock s, int shares)
         {
             EnsureDatabaseCreated(_applicationDbContext);
             return View();
         }
-
+*/
         [HttpGet]
-        [ValidateAntiForgeryToken]
         public IActionResult History()
         {
+            ViewData["transactions"] = stockHistory.getTransactions();
             return View();
         }
-
+/*
         //???: this is a different page, right?
         [HttpGet]
-        [ValidateAntiForgeryToken]
         public IActionResult HistoryCvs()
         {
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult ClearHistory()
         {
             EnsureDatabaseCreated(_applicationDbContext);
@@ -67,7 +64,6 @@ namespace SE344.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult LoadHistory()
         {
             EnsureDatabaseCreated(_applicationDbContext);
@@ -76,7 +72,6 @@ namespace SE344.Controllers
 */
         #endregion
 
-        // Theoretically, this should be GET, but I'm not sure whether ASP.NET supports get forms
         [HttpGet]
         public async Task<IActionResult> SearchStocks(string symbol)
         {
