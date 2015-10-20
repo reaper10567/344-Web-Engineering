@@ -14,35 +14,38 @@
     </li>
 </ul>
 
-<table id="historyTable" class="table">
-    <!-- `table.table` I feel dirty... -->
-    <thead>
-        <tr>
-            <th>Stock</th>
-            <th>Date</th>
-            <th>Price per Share</th>
-            <th>Num Shares</th>
-            <th>Total Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in transactions)
-        {
-            <tr>
-                <td>@t.Key</td>
-                <td>@t.Value.TransactionDate</td>
-                <td>@t.Value.PricePerShare</td>
-                <td>@t.Value.NumShares</td>
-                <td>@t.Value.TotalPrice</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-md-10"> <!-- because why would putting the class on the table work? -->
+        <table id="historyTable" class="table">
+            <!-- `table.table` I feel dirty... -->
+            <thead>
+                <tr>
+                    <th>Stock</th>
+                    <th>Date</th>
+                    <th>Price per Share</th>
+                    <th>Num Shares</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in transactions)
+                {
+                    <tr>
+                        <td>@t.Key</td>
+                        <td>@t.Value.TransactionDate</td>
+                        <td>@t.Value.PricePerShare</td>
+                        <td>@t.Value.NumShares</td>
+                        <td>@t.Value.TotalPrice</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-<div id="historyActions" class="btn-group btn-group-vertical">
-    <!-- TODO: horizontal alignment on tall, skinny screens -->
-    <!-- TODO: Wireframe says that this should be to the right of the table -->
-    <a disabled class="btn btn-default">Import</a>
-    <a asp-controller="Stocks" asp-action="HistoryCvs" class="btn btn-default">Save</a>
-    <a disabled class="btn btn-default">Clear History</a>
+    <div id="historyActions" class="btn-group btn-group-vertical col-md-2">
+        <!-- TODO: horizontal alignment on tall, skinny screens -->
+        <a disabled class="btn btn-default">Import</a>
+        <a asp-controller="Stocks" asp-action="HistoryCvs" class="btn btn-default">Save</a>
+        <a disabled class="btn btn-danger">Clear History</a>
+    </div>
 </div>
