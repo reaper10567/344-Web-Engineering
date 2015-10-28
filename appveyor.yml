@@ -1,0 +1,23 @@
+version: R2.{build}
+os: Visual Studio 2015
+environment:
+  DNX_FEED: https://www.nuget.org/api/v2
+install:
+- cmd: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+before_build:
+- ps: "\"&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}\" \ndnvm install 1.0.0-beta7\ndnvm upgrade\ndnvm update-self\ndnvm list\ndnvm use 1.0.0-beta7\nnpm cache clean\nnpm install -g gulp bower\ndnu restore\n(New-Object Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe', 'C:\\Tools\\NuGet\\NuGet.exe')\nnuget restore"
+build:
+  publish_wap: true
+  verbosity: minimal
+after_build:
+- cmd: dir C:\projects\344-web-engineering\
+test_script:
+- cmd: >-
+    dnu restore
+    dnx -p C:\projects\344-web-engineering\src\SE344Test\project.json test
+    dnx -p C:\projects\344-web-engineering\src\SE344\project.json web
+    cd C:\projects\344-web-engineering\src\SE344Test
+artifacts:
+- path: '\artifacts\bin\SE344\'
+  name: Primary Project Results
+deploy: off
