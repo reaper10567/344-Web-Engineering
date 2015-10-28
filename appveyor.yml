@@ -14,8 +14,11 @@ after_build:
 test_script:
 - cmd: >-
     dnu restore
+
     dnx -p C:\projects\344-web-engineering\src\SE344Test\project.json test
+
     dnx -p C:\projects\344-web-engineering\src\SE344\project.json web
+
     cd C:\projects\344-web-engineering\src\SE344Test
 artifacts:
 - path: '\artifacts\bin\SE344\'
