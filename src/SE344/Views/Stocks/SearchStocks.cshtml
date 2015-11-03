@@ -21,34 +21,46 @@
 </ul>
 
 <form asp-controller="Stocks" asp-action="SearchStocks" method="get" class="form-inline pull-right" role="form">
-    <input type="text" id="symbol" class="form-control" name="symbol" placeholder="Ticker symbol" required="required" value="@symbol"/>
+    <input type="search" autosave="tickerSymbol" id="symbol" class="form-control" name="symbol" placeholder="Ticker symbol" required="required" value="@symbol" />
     <button type="submit" class="btn btn-default" name="submit">Search</button>
 </form>
 <div class="clearfix"></div>
 
 @if (null != symbol)
 {
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @Model.Identifier.ToUpper()
+    <div class="row">
+        <div class="col-sm-6 col-md-8 panel panel-default">
+            <div class="panel-heading">
+                @Model.Identifier.ToUpper()
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>Ask Price:</dt>
+                    <dd>$@Model.CurrentPrice</dd>
+
+                    <dt>Day's High:</dt>
+                    <dd>$@Model.DaysHigh</dd>
+
+                    <dt>Day's Low:</dt>
+                    <dd>$@Model.DaysLow</dd>
+
+                    <dt>Yearly High:</dt>
+                    <dd>$@Model.YearsHigh</dd>
+
+                    <dt>Yearly Low:</dt>
+                    <dd>$@Model.YearsLow</dd>
+                </dl>
+            </div>
         </div>
-        <div class="panel-body">
-            <dl class="dl-horizontal">
-                <dt>Ask Price:</dt>
-                <dd>$@Model.CurrentPrice</dd>
-
-                <dt>Day's High:</dt>
-                <dd>$@Model.DaysHigh</dd>
-
-                <dt>Day's Low:</dt>
-                <dd>$@Model.DaysLow</dd>
-
-                <dt>Yearly High:</dt>
-                <dd>$@Model.YearsHigh</dd>
-
-                <dt>Yearly Low:</dt>
-                <dd>$@Model.YearsLow</dd>
-            </dl>
+        <div class="col-sm-6 col-md-4">
+            <form asp-controller="Stocks" asp-action="BuyStock" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="panel panel-default" role="form">
+                <input type="number" name="shares" value="0" min="0" />
+                <input type="submit" name="buy" value="Buy Shares" class="btn btn-default" />
+            </form>
+            <form asp-controller="Stocks" asp-action="SetNote" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="panel panel-default form-horizontal" role="form">
+                <input type="text" name="note" value="@Model.Note" />
+                <input type="submit" name="buy" value="Set Note" class="btn btn-default" />
+            </form>
         </div>
     </div>
 
