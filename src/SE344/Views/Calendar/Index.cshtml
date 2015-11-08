@@ -1,10 +1,52 @@
 ﻿@{
     ViewData["Title"] = "Calendar";
 }
+
+
+
 <div id="modalDialog" class="modalDialog">
     <div>
         <a href="#close" title="Close" class="close">X</a>
-        <p>This is our awesome modal!</p>
+        
+        
+        @using (Html.BeginForm())
+        {
+            <fieldset>
+                <legend>New Event</legend>
+                <div>
+                    <label for="Event">Event Name:</label>
+                    <input type="text" name="Event Name" value="" />
+                </div>
+                <div>
+                    <label for="StartTime">Start DateTime:</label>
+                    <input type="datetime" id="StartDateTime" name="StartDateTime" value="" />
+                </div>
+                <div>
+                    <label for="EndTime">End DateTime:</label>
+                    <input type="datetime" id="EndDateTime" name="EndDateTime" value="" />
+                </div>
+                <div>
+                    <input type="checkbox" id="allDay" name="allDay" value="" onclick="check();"> All Day
+                </div>
+                <script>
+                    function check()
+                    {
+                        document.getElementById('StartDateTime').disabled = document.getElementById('allDay').checked;
+                        document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
+                    }
+                </script>
+                
+                <div>
+                    <label for="EventDescription">Event Description:</label>
+                    <input type="text" name="EventDescription" value="" size="300"/>
+                </div>
+                <div>
+                    <label>&nbsp;</label>
+                    <input type="submit" value="Submit" class="submit" />
+                </div>
+            </fieldset>
+        }
+
     </div>
 </div>
 
@@ -94,3 +136,4 @@
         })(jQuery);
     </script>
 }
+
