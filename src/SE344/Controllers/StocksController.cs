@@ -20,6 +20,7 @@ namespace SE344.Controllers
     {
         readonly IStockHistoryService stockHistory = new StubStockHistoryService();
         readonly IStockInformationService stockInfo = new YahooStockInformationService();
+        readonly IStockNoteService stockNote = new StubStockNoteService();
 
 
         [HttpGet]
@@ -124,8 +125,19 @@ namespace SE344.Controllers
                 ViewData["LowHighData"] = new List<JArray>();
             }
             model = await stockInfo.GetQuoteAsync(model);
+            model = await stockNote.getNote(model);
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetNote(string symbol, string note)
+        {
+            var model = new Stock(symbol);
+            model.Note = note;
+            await stockNote.setNote(model);
+
+            return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
         }
     }
 }
