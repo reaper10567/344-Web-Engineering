@@ -14,10 +14,11 @@ namespace SE344.Controllers
         }
 
         [HttpPost]
-        public void Thing(FormCollection form)
+        public ViewResult Thing(FormCollection form)
         {
-            System.Diagnostics.Debug.WriteLine("Mother fucking posting stuff man!");
+            System.Diagnostics.Debug.WriteLine("Posting things here?");
             System.Diagnostics.Debug.WriteLine("Event Name: " + form["Event Name"]);
+            return View("~/Views/Calendar/Index.cshtml");
         }
     }
 }
