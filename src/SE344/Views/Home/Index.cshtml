@@ -1,5 +1,4 @@
 ﻿@using Newtonsoft.Json.Linq
-@using SE344.ViewModels.Stock
 @{
     ViewData["Title"] = "Hodepodge site of the Internet";
     var stocks = (IEnumerable<Stock>) ViewData["Stocks"];
@@ -31,6 +30,11 @@
     </div>
 
     <div class="col-sm-8">
+            <form asp-controller="Home" asp-action="Post" id="facebookPost" method="post">
+                <textarea rows="4" cols="100" id="message" class="form-control" name="message" placeholder="What's on your mind?" required="required"></textarea>
+                <input type="submit" />
+            </form>
+
         @foreach (var post in feed)
         {
             <div class="panel panel-default">

@@ -33,6 +33,14 @@ namespace SE344.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Post(string message)
+        {
+            _facebookApi.AccessToken = Context.User.FindFirstValue("access_token");
+            await _facebookApi.PostUserFeedAsync(message);
+            return RedirectToAction("Index");
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
