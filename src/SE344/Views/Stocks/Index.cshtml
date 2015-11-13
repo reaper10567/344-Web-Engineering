@@ -1,7 +1,7 @@
-﻿@using SE344.ViewModels.Stock
+﻿@using SE344.Models;
 @{
     ViewData["Title"] = "Stocks";
-    var stocks = ViewData["stocks"] as IEnumerable<SearchViewModel>;
+    var stocks = ViewData["stocks"] as IEnumerable<Stock>;
 }
 
 <ul class="nav nav-tabs nav-justified">
@@ -19,7 +19,7 @@
         <div class="col-sm-6 col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    @stock.Symbol.ToUpper()
+                    @stock.Identifier.ToUpper()
                 </div>
                 <div class="panel-body">
                     <dl class="dl-horizontal">

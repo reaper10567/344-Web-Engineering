@@ -11,7 +11,8 @@ namespace SE344Test.Models
 
         public StockTest()
         {
-            _stock = new Stock("MSFT", 5.5m);
+            _stock = new Stock("MSFT");
+            _stock.CurrentPrice = 5.5m;
             _purchase1 = new StockTransaction(DateTime.Now, 4.0m, 7);
             _purchase2 = new StockTransaction(DateTime.Now.AddDays(-1), 7.5m, 2);
             _sale1 = new StockTransaction(DateTime.Now, 5.0m, -1);
