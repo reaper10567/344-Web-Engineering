@@ -42,7 +42,7 @@ namespace SE344.Controllers
             var stock = new Stock(symbol);
             stock = await stockInfo.GetQuoteAsync(stock);
 
-            var model = new StockTransaction(DateTime.Now, stock.CurrentPrice, symbol);
+            var model = new StockTransaction(DateTime.Now, stock.CurrentPrice.Value, shares);
             stockHistory.addTransaction(stock, model);
 
             return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
@@ -89,10 +89,21 @@ namespace SE344.Controllers
         }
 
         [HttpPost]
-        public IActionResult LoadHistory()
+        public IActionResult LoadHistory(System.Web.HttpPostedFileBase file)
         {
             EnsureDatabaseCreated(_applicationDbContext);
-            return View();
+
+            var reader = new Microsoft.VisualBasic.FileIO.TextFieldParser(file.InputStream);
+            reader.SetDelimiters(",");
+            while (!reader.EndOfData) {
+                var line = reader.ReadFields();
+
+                var stock = new Stock(line[0]);
+                var model = new StockTransaction(DateTime.Parse(line[1]), Decimal.Parse( line[2]), int.Parse( line[3]));
+                stockHistory.addTransaction(stock, model);
+            }
+
+            return Redirect("/Stocks/History");
         }
 */
         #endregion

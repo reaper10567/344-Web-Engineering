@@ -23,6 +23,10 @@ namespace SE344.Services
         /// Return transactions filtered by identifier
         /// </summary>
         IEnumerable<StockTransaction> getTransactions(string identifier);
+
+        void addTransaction(Stock stock, StockTransaction model);
+
+        void clear();
     }
 
     public class StubStockHistoryService : IStockHistoryService
@@ -52,6 +56,10 @@ namespace SE344.Services
 
             return retVal;
         }
+
+        public void addTransaction(Stock stock, StockTransaction model) { }
+
+        public void clear() { }
     }
 
     /*
@@ -72,6 +80,8 @@ namespace SE344.Services
                 throw new IllegalArgumentException("Invalid Ticker Symbol");
             }
         }
+
+        public void addTransaction(Stock stock, StockTransaction model) { }
     }
     */
 }
