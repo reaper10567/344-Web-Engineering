@@ -34,7 +34,7 @@ namespace SE344.Controllers
         }
 
         #region "transaction history"
-/*
+
         // POST: /Stock/BuyStock
         [HttpPost]
         public async Task<IActionResult> Buy(string symbol, int shares)
@@ -47,7 +47,7 @@ namespace SE344.Controllers
 
             return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
         }
-*/
+
         [HttpGet]
         public IActionResult History()
         {
@@ -79,7 +79,7 @@ namespace SE344.Controllers
 
             return File(retVal, "text/csv", "transactionHistory.csv");
         }
-/*
+
         [HttpPost]
         public IActionResult ClearHistory()
         {
@@ -102,7 +102,6 @@ namespace SE344.Controllers
 
             return Redirect("/Stocks/History");
         }
-*/
         #endregion
 
         [HttpGet]
