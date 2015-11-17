@@ -37,10 +37,15 @@ namespace SE344.Controllers
 /*
         // POST: /Stock/BuyStock
         [HttpPost]
-        public IActionResult Buy(Stock s, int shares)
+        public async Task<IActionResult> Buy(string symbol, int shares)
         {
-            EnsureDatabaseCreated(_applicationDbContext);
-            return View();
+            var stock = new Stock(symbol);
+            stock = await stockInfo.GetQuoteAsync(stock);
+
+            var model = new StockTransaction(DateTime.Now, stock.CurrentPrice, symbol);
+            stockHistory.addTransaction(stock, model);
+
+            return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
         }
 */
         [HttpGet]
@@ -79,7 +84,8 @@ namespace SE344.Controllers
         public IActionResult ClearHistory()
         {
             EnsureDatabaseCreated(_applicationDbContext);
-            return View();
+            stockHistory.clearHistory();
+            return Redirect("/Stocks/History");
         }
 
         [HttpPost]
