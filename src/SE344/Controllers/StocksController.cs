@@ -83,16 +83,13 @@ namespace SE344.Controllers
         [HttpPost]
         public IActionResult ClearHistory()
         {
-            EnsureDatabaseCreated(_applicationDbContext);
-            stockHistory.clearHistory();
+            stockHistory.clear();
             return Redirect("/Stocks/History");
         }
 
         [HttpPost]
         public IActionResult LoadHistory(System.Web.HttpPostedFileBase file)
         {
-            EnsureDatabaseCreated(_applicationDbContext);
-
             var reader = new Microsoft.VisualBasic.FileIO.TextFieldParser(file.InputStream);
             reader.SetDelimiters(",");
             while (!reader.EndOfData) {

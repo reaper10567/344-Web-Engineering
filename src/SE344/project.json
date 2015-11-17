@@ -1,4 +1,4 @@
-﻿{
+{
   "webroot": "wwwroot",
   "userSecretsId": "aspnet5-SE344-34ff953b-114b-477c-8e58-296f732aa9a1",
   "version": "1.0.0-*",
@@ -39,7 +39,12 @@
   },
 
   "frameworks": {
-    "dnx451": { }
+    "dnx451": {
+      "frameworkAssemblies": {
+        "Microsoft.VisualBasic": "10.0.0.0",
+        "System.Web": "4.0.0.0"
+      }
+    }
   },
 
   "exclude": [
