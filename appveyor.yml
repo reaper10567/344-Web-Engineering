@@ -5,17 +5,25 @@ environment:
 install:
 - cmd: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
 before_build:
-- ps: "\"&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}\" \ndnvm install 1.0.0-beta7\ndnvm upgrade\ndnvm update-self\ndnvm list\ndnvm use 1.0.0-beta7\nnpm cache clean\nnpm install -g gulp bower\ndnu restore\n(New-Object Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe', 'C:\\Tools\\NuGet\\NuGet.exe')\nnuget restore"
+- ps: "\"&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}\" "
+- ps: "dnvm install 1.0.0-beta7"
+- ps: "dnvm upgrade"
+- ps: "dnvm update-self"
+- ps: "dnvm list"
+- ps: "dnvm use 1.0.0-beta7"
+- ps: "npm cache clean"
+- ps: "npm install -g gulp bower"
+- ps: "dnu restore"
+- ps: "(New-Object Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe', 'C:\\Tools\\NuGet\\NuGet.exe')"
+- ps: "nuget restore"
 build:
   publish_wap: true
   verbosity: minimal
 after_build:
 - cmd: dir C:\projects\344-web-engineering\
 test_script:
-- cmd: >-
-    dnu restore
-
-    dnx -p C:\projects\344-web-engineering\src\SE344Test\project.json test
+- cmd: dnu restore
+- cmd: dnx -p C:\projects\344-web-engineering\src\SE344Test\project.json test
 artifacts:
 - path: '\artifacts\bin\SE344\'
   name: Primary Project Results
