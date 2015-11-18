@@ -7,10 +7,10 @@ namespace SE344.ViewModels.Calendar
 {
     public class EventViewModel
     {
-        public string Title { get; set; }
-        public bool AllDay { get; set; }
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
+        public string title { get; set; }
+        public string allDay { get; set; }
+        public string start { get; set; }
+        public string end { get; set; }
 
     }
 }

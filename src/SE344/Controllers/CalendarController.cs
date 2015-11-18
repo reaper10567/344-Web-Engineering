@@ -11,44 +11,45 @@ namespace SE344.Controllers
     [Authorize]
     public class CalendarController : Controller
     {
-        List<CalendarEvent> eventsForUser = new List<CalendarEvent>();
+        static List<CalendarEvent> eventsForUser = new List<CalendarEvent>();
         public ActionResult Index()
         {
+            System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
             //do call to DB here
-            var model = new EventViewModel[eventsForUser.Count+1];
-            for(int i = 0; i < eventsForUser.Count; i++)
-            {
-                model[i] = new EventViewModel
+            var model = new List<EventViewModel>();
+            foreach(var e in eventsForUser){
+                var evm = new EventViewModel
                 {
-                    Title = eventsForUser[i].NameOfEvent,
-                    AllDay = eventsForUser[i].AllDayEvent,
-                    Start = eventsForUser[i].StartTime,
-                    End = eventsForUser[i].EndTime
-                    
+                    title = e.NameOfEvent,
+                    allDay = e.AllDayEvent.ToString().ToLower(),
+                    start = e.StartTime,
+                    end = e.EndTime
                 };
+                model.Add(evm);
             }
-            ViewData["Events"] = eventsForUser;
+
+            var modelToReturn = model.ToArray();
+            ViewData["Events"] = modelToReturn;
             //use viewmodel instead of c# object
-            return View(model);
+            return View();
         }
 
        
 
         [HttpPost]
-        public ViewResult Thing(FormCollection form)
+        public IActionResult Thing(FormCollection form)
         {
-            System.Diagnostics.Debug.WriteLine("Posting things here?");
+            //System.Diagnostics.Debug.WriteLine("Posting things here?");
             System.Diagnostics.Debug.WriteLine("Event Name: " + form["Event Name"]);
+            System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
 
             bool allDay;
             Boolean.TryParse(form["allDay"], out allDay);
             string name = form["Event Name"];
-            DateTime start;
-            DateTime.TryParse(form["StartDateTime"], out start);
-            DateTime end;
-            DateTime.TryParse(form["EndDateTime"], out end);
+            string start = form["StartDateTime"];
+            string end = form["EndDateTime"];
             string desc = form["EventDescription"];
-
+            System.Diagnostics.Debug.WriteLine("All Day Event: " + allDay);
             if (allDay) {
                 eventsForUser.Add(new CalendarEvent(name,start,desc));
             }
@@ -57,7 +58,8 @@ namespace SE344.Controllers
                 eventsForUser.Add(new CalendarEvent(name,start,end,desc));
             }
             System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
-            return View("~/Views/Calendar/Index.cshtml");
+            //return View("~/Views/Calendar/Index.cshtml");
+            return RedirectToAction("Index");
         }
     }
 }

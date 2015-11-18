@@ -1,9 +1,10 @@
 ﻿@using SE344.ViewModels.Calendar
-@model SE344.ViewModels.Calendar.EventViewModel[]
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
 @{
         ViewData["Title"] = "Calendar";
-        List<CalendarEvent> events = ViewData["Events"] as List<CalendarEvent>;
-    
+        EventViewModel[] myEvents = ViewData["Events"] as EventViewModel[];
+        
 }
 
 
@@ -18,14 +19,14 @@
                     <label for="Event">Event Name:</label>
                     <input id="eventName" type="text" name="Event Name" value="" />
                     <label for="StartTime">Start DateTime:</label>
-                    <input type="datetime" id="StartDateTime" name="StartDateTime" value="" />
+                    <input type="text" id="StartDateTime" name="StartDateTime" value="" />
                     <label for="EndTime">End DateTime:</label>
-                    <input type="datetime" id="EndDateTime" name="EndDateTime" value="" />
+                    <input type="text" id="EndDateTime" name="EndDateTime" value="" />
                     <label for="allDay">All Day</label><input type="checkbox" id="allDay" name="allDay" value="" onclick="check();"/> 
                 <script>
                     function check()
                     {
-                        document.getElementById('StartDateTime').disabled = document.getElementById('allDay').checked;
+                        
                         document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
                     }
                 </script>
@@ -33,12 +34,6 @@
                     <input type="text" name="EventDescription" value="" size="300"/>
                     <label>&nbsp;</label>
                     <input type="submit" value="Submit" class="submit" />
-            <script>
-                function addEvent(event) {
-                    
-
-                }
-            </script>
         </form>
     </div>
 </div>
@@ -121,21 +116,31 @@
 
     <script type="text/javascript">
         (function($) {
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $('#calendarView').fullCalendar({
+                    dayClick: function(date){
+                        location.href = "#modalDialog";
+                        document.getElementById("StartDateTime").value = date.format();
 
+                    },
+                    events:[
+                        {
+                            title: 'Dummy Event',
+                            start : '2015-11-11'
+
+                        }
+                    ]
                 });
-                var myModel = [];
+                console.log('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
+                $('#calendarView').fullCalendar({
+                    
+                    events: JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))')
+                });
 
-                for (var i = 0; i < myModel.length ; i++) {
-                    console.log("contents of myModel[" + i + "]: " + myModel[i]);
-                    $('calendarView').fullCalendar('renderEvent', myModel[i]);
-
-                }
             });
         })(jQuery);
 
-       
+
     </script>
 }
 
