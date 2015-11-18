@@ -12,8 +12,6 @@ before_build:
 - ps: "npm cache clean"
 - ps: "npm install -g gulp bower"
 - ps: "dnu restore"
-- ps: "(New-Object Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe', 'C:\\Tools\\NuGet\\NuGet.exe')"
-- ps: "nuget restore"
 build:
   publish_wap: true
   verbosity: minimal
