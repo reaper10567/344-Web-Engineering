@@ -28,6 +28,7 @@
                     {
                         
                         document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
+                        document.getElementById('allDay').value = document.getElementById('allDay').checked;
                     }
                 </script>
                     <label for="EventDescription">Event Description:</label>
@@ -127,15 +128,25 @@
                         {
                             title: 'Dummy Event',
                             start : '2015-11-11'
-
                         }
                     ]
                 });
-                console.log('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
-                $('#calendarView').fullCalendar({
+
+                var fullJSONString = '@Html.Raw(JsonConvert.SerializeObject(myEvents))';
+                var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
+                console.log(allEvents);
+                var newEvent;
+                for(var i in allEvents){
+                    newEvent = {
+                        title: i.title,
+                        start: i.start,
+                        end: i.end
                     
-                    events: JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))')
-                });
+                    }
+                    $('#calendarView').fullCalendar('renderEvent',newEvent,'stick');
+                }
+               
+               
 
             });
         })(jQuery);
