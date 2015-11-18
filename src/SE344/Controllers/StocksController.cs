@@ -18,10 +18,25 @@ namespace SE344.Controllers
     [Authorize]
     public class StocksController : Controller
     {
-        readonly IStockHistoryService stockHistory = new StubStockHistoryService();
-        readonly IStockInformationService stockInfo = new YahooStockInformationService();
-        readonly IStockNoteService stockNote = new StubStockNoteService();
+        private readonly IStockHistoryService stockHistory;
+        private readonly IStockInformationService stockInfo;
+        private readonly IStockNoteService stockNote;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _applicationDbContext;
 
+        public StocksController(
+            UserManager<ApplicationUser> userManager,
+            IStockHistoryService stockHistory,
+            IStockInformationService stockInfo,
+            IStockNoteService stockNote,
+            ApplicationDbContext applicationDbContext)
+        {
+            this.stockHistory = stockHistory;
+            this.stockInfo = stockInfo;
+            this.stockNote = stockNote;
+            _userManager = userManager;
+            _applicationDbContext = applicationDbContext;
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()

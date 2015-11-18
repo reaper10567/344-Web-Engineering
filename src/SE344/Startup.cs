@@ -83,6 +83,9 @@ namespace SE344
             // Register application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IStockInformationService, YahooStockInformationService>();
+            services.AddTransient<IStockHistoryService, StubStockHistoryService>();
+            services.AddTransient<IStockNoteService, StubStockNoteService>();
         }
 
         // Configure is called after ConfigureServices is called.
