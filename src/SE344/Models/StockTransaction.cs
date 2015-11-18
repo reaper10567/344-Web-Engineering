@@ -38,5 +38,30 @@ namespace SE344.Models
         {
             get { return (this.PricePerShare * this.NumShares); }
         }
+
+        public override int GetHashCode()
+        {
+            return ((TransactionDate.GetHashCode() * 31) + PricePerShare.GetHashCode() + 31) * NumShares;
+        }
+
+        protected bool CanEquals(object rhs)
+        {
+            return rhs.GetType() == typeof(StockTransaction);
+        }
+
+        public override bool Equals(object rhs)
+        {
+            if (this.CanEquals(rhs))
+            {
+                var rhs2 = (StockTransaction)rhs;
+                if (rhs2.CanEquals(this))
+                {
+                    return (this.TransactionDate.Equals(rhs2.TransactionDate)) &&
+                           (this.PricePerShare.Equals(rhs2.PricePerShare)) &&
+                           (this.NumShares.Equals(rhs2.NumShares));
+                }
+            }
+            return false;
+        }
     }
 }
