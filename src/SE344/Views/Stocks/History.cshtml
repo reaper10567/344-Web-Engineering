@@ -43,13 +43,29 @@
 
     <div id="historyActions" class="btn-group btn-group-vertical col-md-2">
         <!-- TODO: horizontal alignment on tall, skinny screens -->
-        <form asp-controller="Stocks" asp-action="LoadHistory" method="post">
-            <input type="file" name="file"  />
-            <input type="submit" class="btn btn-default" value="Import" />
-        </form>
+        <button class="btn btn-default" data-toggle="modal" data-target="#load-history-modal">Import</button>
         <a asp-controller="Stocks" asp-action="HistoryCvs" class="btn btn-default">Save</a>
         <form asp-controller="Stocks" asp-action="ClearHistory" method="post">
             <input type="submit" class="btn btn-danger"  value="Clear History" />
         </form>
     </div>
 </div>
+
+<div id="load-history-modal" class="modal fade">
+    <form asp-controller="Stocks" asp-action="LoadHistory" method="post" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Import History</h4>
+            </div>
+            <div class="modal-body">
+                <label for="importFile">File: </label>
+                <input type="file" name="file" id="importFile" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-primary" value="Import" />
+            </div>
+        </div>
+    </form>
+</div><!-- /.modal -->
