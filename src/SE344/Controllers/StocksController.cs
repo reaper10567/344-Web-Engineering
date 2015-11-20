@@ -105,14 +105,18 @@ namespace SE344.Controllers
         [HttpPost]
         public IActionResult LoadHistory(System.Web.HttpPostedFileBase file)
         {
-            var reader = new Microsoft.VisualBasic.FileIO.TextFieldParser(file.InputStream);
-            reader.SetDelimiters(",");
-            while (!reader.EndOfData) {
-                var line = reader.ReadFields();
+            if (file != null && file.ContentLength > 0)
+            {
+                var reader = new Microsoft.VisualBasic.FileIO.TextFieldParser(file.InputStream);
+                reader.SetDelimiters(",");
+                while (!reader.EndOfData)
+                {
+                    var line = reader.ReadFields();
 
-                var stock = new Stock(line[0]);
-                var model = new StockTransaction(DateTime.Parse(line[1]), Decimal.Parse( line[2]), int.Parse( line[3]));
-                stockHistory.addTransaction(stock, model);
+                    var stock = new Stock(line[0]);
+                    var model = new StockTransaction(DateTime.Parse(line[1]), Decimal.Parse(line[2]), int.Parse(line[3]));
+                    stockHistory.addTransaction(stock, model);
+                }
             }
 
             return Redirect("/Stocks/History");

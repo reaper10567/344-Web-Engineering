@@ -53,8 +53,9 @@
             </div>
         </div>
         <div class="col-sm-6 col-md-4">
-            <form asp-controller="Stocks" asp-action="BuyStock" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="panel panel-default" role="form">
+            <form asp-controller="Stocks" asp-action="Buy" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="panel panel-default" role="form">
                 <input type="number" name="shares" value="0" min="0" />
+                <input type="hidden" name="symbol" value="@Model.Identifier" />
                 <input type="submit" name="buy" value="Buy Shares" class="btn btn-default" />
             </form>
             <form asp-controller="Stocks" asp-action="SetNote" method="post" class="panel panel-default form-horizontal" role="form">
