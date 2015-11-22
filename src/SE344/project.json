@@ -42,6 +42,7 @@
     "dnx451": {
       "frameworkAssemblies": {
         "Microsoft.VisualBasic": "10.0.0.0",
+        "System.Data": "4.0.0.0",
         "System.Web": "4.0.0.0"
       }
     }

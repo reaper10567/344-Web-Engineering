@@ -157,7 +157,7 @@ namespace SE344.Controllers
                 ViewData["LowHighData"] = new List<JArray>();
             }
             model = await stockInfo.GetQuoteAsync(model);
-            model = await stockNote.getNote(model);
+            model = await stockNote.getNote(Context.User.GetUserId(), model);
 
             return View(model);
         }
@@ -167,7 +167,7 @@ namespace SE344.Controllers
         {
             var model = new Stock(symbol);
             model.Note = note;
-            await stockNote.setNote(model);
+            await stockNote.setNote(Context.User.GetUserId(), model);
 
             return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
         }
