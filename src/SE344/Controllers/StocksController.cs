@@ -52,6 +52,7 @@ namespace SE344.Controllers
 
         // POST: /Stock/BuyStock
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Buy(string symbol, int shares)
         {
             var stock = new Stock(symbol);
@@ -96,6 +97,7 @@ namespace SE344.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ClearHistory()
         {
             stockHistory.clear();
@@ -103,6 +105,7 @@ namespace SE344.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult LoadHistory(System.Web.HttpPostedFileBase file)
         {
             if (file != null && file.ContentLength > 0)
@@ -163,6 +166,7 @@ namespace SE344.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetNote(string symbol, string note)
         {
             var model = new Stock(symbol);
