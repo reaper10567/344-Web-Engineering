@@ -39,9 +39,6 @@ namespace SE344.Controllers
         [HttpPost]
         public IActionResult Thing(FormCollection form)
         {
-            //System.Diagnostics.Debug.WriteLine("Posting things here?");
-            System.Diagnostics.Debug.WriteLine("Event Name: " + form["Event Name"]);
-            System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
 
             bool allDay;
             Boolean.TryParse(form["allDay"], out allDay);
@@ -49,16 +46,15 @@ namespace SE344.Controllers
             string start = form["StartDateTime"];
             string end = form["EndDateTime"];
             string desc = form["EventDescription"];
-            System.Diagnostics.Debug.WriteLine("All Day Event: " + allDay);
+
             if (allDay) {
                 eventsForUser.Add(new CalendarEvent(name,start,desc));
+
             }
             else
             {
                 eventsForUser.Add(new CalendarEvent(name,start,end,desc));
             }
-            System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
-            //return View("~/Views/Calendar/Index.cshtml");
             return RedirectToAction("Index");
         }
     }

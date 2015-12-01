@@ -134,16 +134,16 @@
 
                 var fullJSONString = '@Html.Raw(JsonConvert.SerializeObject(myEvents))';
                 var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
-                console.log(allEvents);
                 var newEvent;
-                for(var i in allEvents){
-                    newEvent = {
-                        title: i.title,
-                        start: i.start,
-                        end: i.end
+                for (var i = 0; i < allEvents.length; i++) {
                     
-                    }
-                    $('#calendarView').fullCalendar('renderEvent',newEvent,'stick');
+                    newEvent = {
+                        title: (allEvents[i])["title"],
+                        start: (allEvents[i])["start"],
+                        end: (allEvents[i])["end"]
+
+                    };
+                    $('#calendarView').fullCalendar('renderEvent',newEvent);
                 }
                
                
