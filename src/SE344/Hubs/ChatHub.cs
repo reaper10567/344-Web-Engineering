@@ -22,6 +22,9 @@ namespace SE344.Hubs
 
         public void SendMessage(string name, string message)
         {
+            Clients.All.NewMessage(name, message);
+
+            // persist to database
             var msg = new ChatMessage
             {
                 Message = message,
@@ -30,8 +33,6 @@ namespace SE344.Hubs
             };
             _dbContext.ChatMessages.Add(msg);
             _dbContext.SaveChanges();
-
-            Clients.All.NewMessage(name, message);
         }
     }
 }

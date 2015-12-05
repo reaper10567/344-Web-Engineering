@@ -215,7 +215,7 @@ namespace SE344.Controllers
         {
             if (User.IsSignedIn())
             {
-                return RedirectToAction(nameof(ManageController.Index),"Manage");
+                return RedirectToAction(nameof(ManageController.Index), "Manage");
             }
 
             if (ModelState.IsValid)
@@ -451,6 +451,14 @@ namespace SE344.Controllers
                 ModelState.AddModelError("", "Invalid code.");
                 return View(model);
             }
+        }
+
+        public IActionResult ChatHistory()
+        {
+            var history = from c in _applicationDbContext.ChatMessages
+                          orderby c.SentAt ascending
+                          select c;
+            return View(history);
         }
 
         #region Helpers
