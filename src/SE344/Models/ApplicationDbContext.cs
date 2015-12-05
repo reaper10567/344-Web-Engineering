@@ -13,10 +13,13 @@ namespace SE344.Models
 
             builder.Entity<ChatMessage>(b =>
             {
+                b.Property<long>("Id").ValueGeneratedOnAdd();
                 b.Key(c => c.Id);
                 b.ToTable("Chat");
                 b.Reference(c => c.Sender).InverseCollection().ForeignKey(c => c.SenderId);
             });
+
+            // Other entities config here
         }
     }
 }

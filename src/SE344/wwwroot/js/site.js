@@ -11,7 +11,7 @@
 
         // Then auto scroll
         $('#messagesPane').stop().animate({
-            scrollTop: $("#messagesPane")[0].scrollHeight
+            scrollTop: $('#messagesPane')[0].scrollHeight
         }, 300);
     };
 

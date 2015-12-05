@@ -36,6 +36,7 @@ namespace SE344
         }
 
         public IConfigurationRoot Configuration { get; set; }
+        public static IServiceProvider ServiceProvider { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -91,6 +92,8 @@ namespace SE344
             // Register application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            ServiceProvider = services.BuildServiceProvider();
         }
 
         // Configure is called after ConfigureServices is called.
