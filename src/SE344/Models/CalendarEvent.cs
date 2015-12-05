@@ -18,7 +18,6 @@ namespace SE344.Models
         private string nameOfEvent;
         private string startTime;
         private string endTime;
-        private string description;
         private bool allDayEvent;
 
         /// <summary>
@@ -27,13 +26,11 @@ namespace SE344.Models
         /// <param name="name">name of the event</param>
         /// <param name="start">start dateTime of the event</param>
         /// <param name="end">end dateTime of the event</param>
-        /// <param name="desc">description of the event</param>
-        public CalendarEvent(string name, string start, string end, string desc)
+        public CalendarEvent(string name, string start, string end)
         {
             nameOfEvent = name;
             startTime = start;
             endTime = end;
-            description = desc;
             allDayEvent = false;
         }
         /// <summary>
@@ -41,13 +38,11 @@ namespace SE344.Models
         /// </summary>
         /// <param name="name">name of the event</param>
         /// <param name="date">the day the event takes place</param>
-        /// <param name="desc">description of the event</param>
-        public CalendarEvent(string name, string date, string desc)
+        public CalendarEvent(string name, string date)
         {
             nameOfEvent = name;
             startTime = date;
             endTime = startTime;
-            description = desc;
             allDayEvent = true;
         }
 
@@ -70,16 +65,30 @@ namespace SE344.Models
             set { endTime = value; }
         }
 
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
-
         public bool AllDayEvent
         {
             get { return allDayEvent; }
             set { allDayEvent = value; }
+        }
+
+        public void setEventName(string newName)
+        {
+            nameOfEvent = newName;
+        }
+
+        public void setStartTime(string start)
+        {
+            startTime = start;
+        }
+
+        public void setEndTime(string end)
+        {
+            endTime = end;
+        }
+
+        public void setAllDay(bool allDay)
+        {
+            allDayEvent = allDay;
         }
     }
 }

@@ -45,17 +45,60 @@ namespace SE344.Controllers
             string name = form["Event Name"];
             string start = form["StartDateTime"];
             string end = form["EndDateTime"];
-            string desc = form["EventDescription"];
 
             if (allDay) {
-                eventsForUser.Add(new CalendarEvent(name,start,desc));
+                eventsForUser.Add(new CalendarEvent(name,start));
 
             }
             else
             {
-                eventsForUser.Add(new CalendarEvent(name,start,end,desc));
+                eventsForUser.Add(new CalendarEvent(name,start,end));
             }
             return RedirectToAction("Index");
         }
+
+        // trying this out to edit events which are already on the calendar----------------------------------------
+        [HttpPost]
+        public IActionResult SecondThing(FormCollection form)
+        {
+            bool o_allDay;
+            Boolean.TryParse(form["original_allDay"], out o_allDay);
+            string o_name = form["original_title"];
+            string o_start = form["original_start"];
+            string o_end = form["original_end"];
+
+            bool allDay;
+            Boolean.TryParse(form["allDay"], out allDay);
+            string name = form["Event Name"];
+            string start = form["StartDateTime"];
+            string end = form["EndDateTime"];
+
+            foreach (CalendarEvent e in eventsForUser)
+            {
+                
+                if (e.NameOfEvent.Equals(o_name))
+                    { 
+                    //e.NameOfEvent.Equals(o_name) && e.StartTime.Equals(o_start) && e.EndTime.Equals(o_end) && e.AllDayEvent.Equals(o_allDay))
+                
+                    eventsForUser.Remove(e);
+                    if (allDay)
+                    {
+                        eventsForUser.Add(new CalendarEvent(name, start));
+
+                    }
+                    else
+                    {
+                        eventsForUser.Add(new CalendarEvent(name, start, end));
+                    }
+                    return RedirectToAction("Index");
+                    
+                }
+
+            }
+            
+            return RedirectToAction("Index");
+        }
+        // end -----------------------------------------------------------------------------------------------------
+
     }
 }
