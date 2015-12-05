@@ -4,6 +4,7 @@ using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics.Entity;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Data.Entity;
 using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
@@ -35,6 +36,7 @@ namespace SE344
         }
 
         public IConfigurationRoot Configuration { get; set; }
+        public static IServiceProvider ServiceProvider { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -63,6 +65,13 @@ namespace SE344
                 options.SaveTokensAsClaims = true;
             });
 
+            // SignalR for chat
+            services.AddSignalR(options =>
+            {
+                options.Hubs.EnableDetailedErrors = true;
+                options.Transports.EnabledTransports = TransportType.All;
+            });
+
             // Add MVC services to the services container.
             services.AddMvc();
 
@@ -83,6 +92,8 @@ namespace SE344
             // Register application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            ServiceProvider = services.BuildServiceProvider();
         }
 
         // Configure is called after ConfigureServices is called.
@@ -116,10 +127,12 @@ namespace SE344
 
             // Add authentication middleware to the request pipeline. You can configure options such as Id and Secret in the ConfigureServices method.
             // For more information see http://go.microsoft.com/fwlink/?LinkID=532715
-             app.UseFacebookAuthentication();
+            app.UseFacebookAuthentication();
 
             // Use Session
             app.UseSession();
+
+            app.UseSignalR();
 
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>

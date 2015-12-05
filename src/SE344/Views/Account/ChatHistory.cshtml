@@ -1,0 +1,18 @@
+﻿@model IEnumerable<ChatMessage>
+@{
+    ViewBag.Title = "Chat History";
+}
+<h2>@ViewBag.Title</h2>
+
+<ul class="list-group">
+    @foreach (var c in Model)
+    {
+        <li class="list-group-item">
+            <h5 class="list-group-item-heading">
+                @c.Sender.Name
+                <small class="pull-right">@c.SentAt</small>
+            </h5>
+            <p class="list-group-item-text">@c.Message</p>
+        </li>
+    }
+</ul>
