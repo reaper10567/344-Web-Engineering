@@ -2,9 +2,8 @@
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 @{
-        ViewData["Title"] = "Calendar";
-        EventViewModel[] myEvents = ViewData["Events"] as EventViewModel[];
-        
+    ViewData["Title"] = "Calendar";
+    EventViewModel[] myEvents = ViewData["Events"] as EventViewModel[];
 }
 
 
@@ -75,9 +74,20 @@
 </ done ------------------------------------------------------------------------------------------------------- -->
 
 
+<div id="modalDialog3" class="modalDialog">
+    <div>
+        <a href="#close" title="Close" class="close">X</a>
+        <form asp-controller="Calendar" asp-action="EventToJSON" method="post" role="form">
+            <label>Event Name: </label><input type="text" id="nameOfEvent" name="nameOfEvent" />
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </form>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xs-12">
-        <a href="#modalDialog" class="button">Create New Event</a>
+        <a href="#modalDialog3" class="button">Save an Event</a>
     </div>
 </div>
 <div class="row">
@@ -171,7 +181,6 @@
                         document.getElementById("StartDateTime1").value = event.start.format();
                         document.getElementById("EndDateTime1").value = event.end.format();
                         document.getElementById("allDay1").value = event.allDay.parseBool();
-
                         //document.getElementById("allDay").value = event.allDay.parseBool();
                             //date.format();
 
