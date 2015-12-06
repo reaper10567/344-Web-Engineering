@@ -1,25 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SE344.Models
 {
     /// <summary>
+    /// <para>
     /// Class that encapsulates what a Calendar Event should consist of within the context of our project
     /// Is simply a data-holding class with no functionality as of right now.
-    /// 
+    /// </para>
     /// -Tyler Gerber
     /// 10/27/2015
     /// </summary>
     public class CalendarEvent
     {
-        //Our decided upon attributes
-        private string nameOfEvent;
-        private string startTime;
-        private string endTime;
-        private bool allDayEvent;
-
         /// <summary>
         /// Constructor for a CalendarEvent
         /// </summary>
@@ -28,11 +20,12 @@ namespace SE344.Models
         /// <param name="end">end dateTime of the event</param>
         public CalendarEvent(string name, string start, string end)
         {
-            nameOfEvent = name;
-            startTime = start;
-            endTime = end;
-            allDayEvent = false;
+            NameOfEvent = name;
+            StartTime = DateTime.Parse(start);
+            EndTime = DateTime.Parse(end);
+            AllDayEvent = false;
         }
+
         /// <summary>
         /// Secondary Constructor for an all-day event
         /// </summary>
@@ -40,55 +33,24 @@ namespace SE344.Models
         /// <param name="date">the day the event takes place</param>
         public CalendarEvent(string name, string date)
         {
-            nameOfEvent = name;
-            startTime = date;
-            endTime = startTime;
-            allDayEvent = true;
+            NameOfEvent = name;
+            StartTime = DateTime.Parse(date);
+            EndTime = StartTime;
+            AllDayEvent = true;
         }
 
-        //So many properties because private variables
-        public string NameOfEvent
-        {
-            get { return nameOfEvent; }
-            set { nameOfEvent = value; }
-        }
+        public long Id { get; set; }
 
-        public string StartTime
-        {
-            get { return startTime; }
-            set { startTime = value; }
-        }
+        public string NameOfEvent { get; set; }
 
-        public string EndTime
-        {
-            get { return endTime; }
-            set { endTime = value; }
-        }
+        public DateTime StartTime { get; set; }
 
-        public bool AllDayEvent
-        {
-            get { return allDayEvent; }
-            set { allDayEvent = value; }
-        }
+        public DateTime EndTime { get; set; }
 
-        public void setEventName(string newName)
-        {
-            nameOfEvent = newName;
-        }
+        public bool AllDayEvent { get; set; }
 
-        public void setStartTime(string start)
-        {
-            startTime = start;
-        }
+        public string UserId { get; set; }
 
-        public void setEndTime(string end)
-        {
-            endTime = end;
-        }
-
-        public void setAllDay(bool allDay)
-        {
-            allDayEvent = allDay;
-        }
+        public virtual ApplicationUser User { get; set; }
     }
 }

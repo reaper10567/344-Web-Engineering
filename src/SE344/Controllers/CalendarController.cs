@@ -22,8 +22,8 @@ namespace SE344.Controllers
                 {
                     title = e.NameOfEvent,
                     allDay = e.AllDayEvent.ToString().ToLower(),
-                    start = e.StartTime,
-                    end = e.EndTime
+                    start = e.StartTime.ToString("u"),
+                    end = e.EndTime.ToString("u")
                 };
                 model.Add(evm);
             }
