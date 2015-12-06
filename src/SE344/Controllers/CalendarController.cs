@@ -5,19 +5,19 @@ using Microsoft.AspNet.Http.Internal;
 using System.Collections.Generic;
 using SE344.Models;
 using SE344.ViewModels.Calendar;
-
 namespace SE344.Controllers
 {
     [Authorize]
     public class CalendarController : Controller
     {
         static List<CalendarEvent> eventsForUser = new List<CalendarEvent>();
+        static CalendarEvent eve = null;
         public ActionResult Index()
         {
             System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
             //do call to DB here
             var model = new List<EventViewModel>();
-            foreach(var e in eventsForUser){
+            foreach (var e in eventsForUser) {
                 var evm = new EventViewModel
                 {
                     title = e.NameOfEvent,
@@ -34,14 +34,14 @@ namespace SE344.Controllers
             return View();
         }
 
-        [HttpPost]
+
         public IActionResult EventToJSON(FormCollection form)
         {
-            CalendarEvent eve = null;
+            eve = null;
             string name = form["nameOfEvent"];
             foreach (CalendarEvent e in eventsForUser)
             {
-                
+
                 if (e.NameOfEvent == name)
                 {
                     eve = e;
@@ -49,6 +49,13 @@ namespace SE344.Controllers
                 }
 
             }
+            System.Diagnostics.Debug.WriteLine(Request.Path);
+            System.Diagnostics.Debug.WriteLine(Request.PathBase);
+            return Redirect("~/Calendar#modalDialog3");
+        }
+
+        [HttpGet]
+        public IActionResult ToJSON() {
             if (eve != null)
             {
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(eve);
@@ -56,7 +63,9 @@ namespace SE344.Controllers
                 return File(json, "text/json", eve.NameOfEvent + ".json");
             }
             else
-                return RedirectToAction("Index");
+            {
+                return Redirect("~/Calendar#modalDialog3");
+            }
         }
        
 

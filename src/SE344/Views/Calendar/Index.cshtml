@@ -82,7 +82,8 @@
         <form asp-controller="Calendar" asp-action="EventToJSON" method="post" role="form">
             <label>Event Name: </label><input type="text" id="nameOfEvent" name="nameOfEvent" />
             <label>&nbsp;</label>
-            <input type="submit" value="Submit" class="submit" />
+            <input type="submit" value="Check If Valid Event" class="submit" />
+            <a asp-controller="Calendar" asp-action="ToJSON" method="get">Save</a>
         </form>
     </div>
 </div>
