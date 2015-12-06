@@ -474,7 +474,7 @@ namespace SE344.Controllers
 
         public IActionResult ChatHistory()
         {
-            var history = from c in _applicationDbContext.ChatMessages
+            var history = from c in _applicationDbContext.ChatMessages.Include(c => c.Sender)
                           orderby c.SentAt ascending
                           select c;
             return View(history);
