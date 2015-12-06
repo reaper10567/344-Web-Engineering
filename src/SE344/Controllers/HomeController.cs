@@ -24,11 +24,11 @@ namespace SE344.Controllers
             _facebookApi.AccessToken = Context.User.FindFirstValue("access_token");
 
             var allIds = _stockHistory.getKnownIdentifiers();
-            var allStocks = await Task.WhenAll(allIds.Select(x => new Stock(x)).Select(_stockInfo.GetQuoteAsync));
+            var allStocks = Task.WhenAll(allIds.Select(x => new Stock(x)).Select(_stockInfo.GetQuoteAsync));
 
             var facebookFeedTask = _facebookApi.GetUserFeedAsync();
 
-            ViewData["Stocks"] = allStocks;
+            ViewData["Stocks"] = await allStocks;
             ViewData["Feed"] = await facebookFeedTask;
             return View();
         }
