@@ -5,7 +5,6 @@ using Microsoft.AspNet.Http.Internal;
 using System.Collections.Generic;
 using SE344.Models;
 using SE344.ViewModels.Calendar;
-
 namespace SE344.Controllers
 {
     [Authorize]
@@ -17,7 +16,8 @@ namespace SE344.Controllers
             System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
             //do call to DB here
             var model = new List<EventViewModel>();
-            foreach(var e in eventsForUser){
+            foreach (var e in eventsForUser) {
+                System.Diagnostics.Debug.WriteLine(e);
                 var evm = new EventViewModel
                 {
                     title = e.NameOfEvent,
@@ -33,11 +33,10 @@ namespace SE344.Controllers
             //use viewmodel instead of c# object
             return View();
         }
-
        
 
         [HttpPost]
-        public IActionResult Thing(FormCollection form)
+        public IActionResult AddEvent(FormCollection form)
         {
 
             bool allDay;
@@ -59,7 +58,7 @@ namespace SE344.Controllers
 
         // trying this out to edit events which are already on the calendar----------------------------------------
         [HttpPost]
-        public IActionResult SecondThing(FormCollection form)
+        public IActionResult ChangeEvent(FormCollection form)
         {
             bool o_allDay;
             Boolean.TryParse(form["original_allDay"], out o_allDay);
@@ -68,7 +67,7 @@ namespace SE344.Controllers
             string o_end = form["original_end"];
 
             bool allDay;
-            Boolean.TryParse(form["allDay"], out allDay);
+            Boolean.TryParse(form["allDay1"], out allDay);
             string name = form["Event Name"];
             string start = form["StartDateTime"];
             string end = form["EndDateTime"];
