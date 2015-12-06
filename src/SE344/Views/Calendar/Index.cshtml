@@ -158,7 +158,23 @@
         }
         (function($) {
             $(document).ready(function () {
+                var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
+                var renderedEvents = [];
+                var newEvent;
+                for (var i = 0; i < allEvents.length; i++) {
+
+                    newEvent = {
+                        title: (allEvents[i])["title"],
+                        start: (allEvents[i])["start"],
+                        end: (allEvents[i])["end"]
+
+                    };
+                    //$('#calendarView').fullCalendar('renderEvent', newEvent);
+                    renderedEvents.push(newEvent);
+                }
+
                 $('#calendarView').fullCalendar({
+                    events: renderedEvents,
                     dayClick: function(date){
                         location.href = "#modalDialog";
                         document.getElementById("StartDateTime").value = date.format();
@@ -220,23 +236,6 @@
                     }
                     myReader.readAsText(toLoad);
                 }
-
-                var fullJSONString = '@Html.Raw(JsonConvert.SerializeObject(myEvents))';
-                var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
-                var newEvent;
-                for (var i = 0; i < allEvents.length; i++) {
-
-                    newEvent = {
-                        title: (allEvents[i])["title"],
-                        start: (allEvents[i])["start"],
-                        end: (allEvents[i])["end"]
-
-                    };
-                    $('#calendarView').fullCalendar('renderEvent',newEvent);
-                }
-
-            
-
             });
         })(jQuery);
 
