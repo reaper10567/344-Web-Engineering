@@ -4,6 +4,7 @@ using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics.Entity;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Data.Entity;
 using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
@@ -35,6 +36,7 @@ namespace SE344
         }
 
         public IConfigurationRoot Configuration { get; set; }
+        public static IServiceProvider ServiceProvider { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -60,7 +62,16 @@ namespace SE344
                 options.UserInformationEndpoint = "https://graph.facebook.com/v2.2/me?fields=id,email,name,link";
                 options.Scope.Add("email");
                 options.Scope.Add("user_friends");
+                options.Scope.Add("user_posts");
+                options.Scope.Add("publish_actions");
                 options.SaveTokensAsClaims = true;
+            });
+
+            // SignalR for chat
+            services.AddSignalR(options =>
+            {
+                options.Hubs.EnableDetailedErrors = true;
+                options.Transports.EnabledTransports = TransportType.All;
             });
 
             // Add MVC services to the services container.
@@ -86,6 +97,8 @@ namespace SE344
             services.AddTransient<IStockInformationService, YahooStockInformationService>();
             services.AddTransient<IStockHistoryService, StubStockHistoryService>();
             services.AddTransient<IStockNoteService, StubStockNoteService>();
+
+            ServiceProvider = services.BuildServiceProvider();
         }
 
         // Configure is called after ConfigureServices is called.
@@ -123,6 +136,8 @@ namespace SE344
 
             // Use Session
             app.UseSession();
+
+            app.UseSignalR();
 
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>

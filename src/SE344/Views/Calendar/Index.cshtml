@@ -1,12 +1,147 @@
-﻿@{
-    ViewData["Title"] = "Calendar";
+﻿@using SE344.ViewModels.Calendar
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@{
+        ViewData["Title"] = "Calendar";
+        EventViewModel[] myEvents = ViewData["Events"] as EventViewModel[];
+        
 }
 
+
+
+<div id="modalDialog" class="modalDialog">
+    <div>
+        <a href="#close" title="Close" class="close">X</a>
+        
+        
+      
+        <form asp-controller="Calendar" asp-action="Thing" method="post" role="form">
+                    <label for="Event">Event Name:</label>
+                    <input id="eventName" type="text" name="Event Name" value="" />
+                    <label for="StartTime">Start DateTime:</label>
+                    <input type="text" id="StartDateTime" name="StartDateTime" value="" />
+                    <label for="EndTime">End DateTime:</label>
+                    <input type="text" id="EndDateTime" name="EndDateTime" value="" />
+                    <label for="allDay">All Day</label><input type="checkbox" id="allDay" name="allDay" value="" onclick="check();"/> 
+                <script>
+                    function check()
+                    {
+                        
+                        document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
+                        document.getElementById('allDay').value = document.getElementById('allDay').checked;
+                    }
+                </script>
+                    <label for="EventDescription">Event Description:</label>
+                    <input type="text" name="EventDescription" value="" size="300"/>
+                    <label>&nbsp;</label>
+                    <input type="submit" value="Submit" class="submit" />
+        </form>
+    </div>
+</div>
+
+</ emily is writing here------------------------------------------------------------------------------------- -->
+<div id="modalDialog2" class="modalDialog">
+    <div>
+        <a href="#close" title="Close" class="close">X</a>
+
+        <form asp-controller="Calendar" asp-action="SecondThing" method="post" role="form">
+
+            <input type="hidden" id="original_title" name ="original_title" value=""/>
+            <input type="hidden" id="original_start" name ="original_start" value="" />
+            <input type="hidden" id="original_end" name ="original_end" value="" />
+            <input type="hidden" id="original_allDay" name ="original_allDay" value="" />
+
+            <label for="Event">Event Name:</label>
+            <input id="eventName1" type="text" name="Event Name" value="" />
+            <label for="StartTime">Start DateTime:</label>
+            <input type="text" id="StartDateTime1" name="StartDateTime" value="" />
+            <label for="EndTime">End DateTime:</label>
+            <input type="text" id="EndDateTime1" name="EndDateTime" value="" />
+            <label for="allDay">All Day</label><input type="checkbox" id="allDay1" name="allDay" value="" onclick="check();" />
+            <script>
+                    function check()
+                    {
+
+                        document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
+                        document.getElementById('allDay').value = document.getElementById('allDay').checked;
+                    }
+            </script>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </form>
+    </div>
+</div>
+
+</ done ------------------------------------------------------------------------------------------------------- -->
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <a href="#modalDialog" class="button">Create New Event</a>
+    </div>
+</div>
 <div class="row">
     <div class="col-xs-12">
         <div id="calendarView"></div>
     </div>
 </div>
+
+<style type="text/css">
+    .modalDialog {
+   position: fixed;
+   font-family: Arial, Helvetica, sans-serif;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   background: rgba(0, 0, 0, 0.8);
+   z-index: 99999;
+   opacity:0;
+   -webkit-transition: opacity 400ms ease-in;
+   -moz-transition: opacity 400ms ease-in;
+   transition: opacity 400ms ease-in;
+   pointer-events: none;
+}
+.modalDialog:target {
+   opacity:1;
+   pointer-events: auto;
+}
+.modalDialog > div {
+   width: 400px;
+   position: relative;
+   margin: 10% auto;
+   padding: 5px 20px 13px 20px;
+   border-radius: 10px;
+   background: #fff;
+   background: -moz-linear-gradient(#fff, #999);
+   background: -webkit-linear-gradient(#fff, #999);
+   background: -o-linear-gradient(#fff, #999);
+}
+.close {
+   background: #606061
+;
+   color: #FFFFFF
+;
+   line-height: 25px;
+   position: absolute;
+   right: -12px;
+   text-align: center;
+   top: -10px;
+   width: 24px;
+   text-decoration: none;
+   font-weight: bold;
+   -webkit-border-radius: 12px;
+   -moz-border-radius: 12px;
+   border-radius: 12px;
+   -moz-box-shadow: 1px 1px 3px #000;
+   -webkit-box-shadow: 1px 1px 3px #000;
+   box-shadow: 1px 1px 3px #000;
+}
+.close:hover {
+   background: #00d9ff
+;
+} 
+</style>
 
 
 @section Stylesheets {
@@ -18,11 +153,99 @@
 
     <script type="text/javascript">
         (function($) {
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $('#calendarView').fullCalendar({
+                    dayClick: function(date){
+                        location.href = "#modalDialog";
+                        document.getElementById("StartDateTime").value = date.format();
 
+                    },
+                    eventClick: function (event, element) {
+                        location.href = "#modalDialog2";
+                        document.getElementById("original_title").value = event.title;
+                        document.getElementById("original_start").value = event.start;
+                        document.getElementById("original_end").value = event.end;
+                        document.getElementById("original_allDay").value = event.allDay;
+
+                        document.getElementById("eventName1").value = event.title;
+                        document.getElementById("StartDateTime1").value = event.start.format();
+                        document.getElementById("EndDateTime1").value = event.end.format();
+                        document.getElementById("allDay1").value = event.allDay.parseBool();
+
+                        //document.getElementById("allDay").value = event.allDay.parseBool();
+                            //date.format();
+
+
+                        //event.title = "CLICKED";
+                        //var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
+                        //for (var i = 0; i < allEvents.length; i++) {
+                        //    allEvents[i].title.setEventName("CLICKED");
+                        //};
+                        //CalendarController.editEvent(event.title, event.allDay, event.start, event.end, "TOTALLY CLICKED", "", "", "");
+                        //$('#calendar').fullCalendar('updateEvent', event);
+                        //location.href = "#modalDialog";
+                        //document.getElementById("StartDateTime").value = date.format();
+
+                    }
                 });
+
+
+
+                var fullJSONString = '@Html.Raw(JsonConvert.SerializeObject(myEvents))';
+                var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
+                var newEvent;
+                for (var i = 0; i < allEvents.length; i++) {
+
+                    newEvent = {
+                        title: (allEvents[i])["title"],
+                        start: (allEvents[i])["start"],
+                        end: (allEvents[i])["end"]
+
+                    };
+                    $('#calendarView').fullCalendar('renderEvent',newEvent);
+                }
+
+
+
             });
         })(jQuery);
+
+
+    </script>
+
+    <script type= "text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+
+                $('#calendar').fullCalendar({
+                    dayClick: function (date, allDay, jsEvent, view) {
+                        $("#dialog").dialog('open');
+                    },
+                });
+
+                $("#dialog").dialog({
+                    autoOpen: false,
+                    height: 350,
+                    width: 700,
+                    modal: true,
+                    buttons: {
+                        'Create event': function () {
+                            $(this).dialog('close');
+                        },
+                        Cancel: function () {
+                            $(this).dialog('close');
+                        }
+                    },
+
+                    close: function () {
+                    }
+
+                });
+
+            });
+        })(jQuery);
+
+
     </script>
 }
+

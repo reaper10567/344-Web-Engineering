@@ -14,13 +14,6 @@ body {
   padding-top: 24px;
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-  max-width: 280px;
-}
-
 /* Carousel */
 .carousel-caption {
   z-index: 10 !important;
@@ -43,4 +36,24 @@ div#historyActions {
     a.btn, form {
         margin-top: 2em;
     }
+}
+
+
+#messagesPane {
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-wrap: break-word;
+}
+
+h5.list-group-item-heading {
+  font-weight: bold;
+}
+
+#chat {
+  .list-group {
+    .list-group-item {
+      border-width: 0;
+    }
+  }
 }
