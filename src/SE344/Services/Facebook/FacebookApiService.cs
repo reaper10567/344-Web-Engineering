@@ -26,8 +26,17 @@ namespace SE344.Services.Facebook
         /// <returns>A <see cref="JArray"/> of user's posts</returns>
         public async Task<JToken> GetUserFeedAsync()
         {
-            var query = new Dictionary<string, string> {{"fields", "from{name,id,link},message,created_time"}};
-            var res = await _client.GetStringAsync(BuildApiUrl("me/feed", query));
+            var query = new Dictionary<string, string> { { "fields", "from{name,id,link},message,created_time" } };
+
+            string res;
+            try
+            {
+                res = await _client.GetStringAsync(BuildApiUrl("me/feed", query));
+            }
+            catch (HttpRequestException)
+            {
+                return new JArray();
+            }
             return JObject.Parse(res)["data"];
         }
 
@@ -38,7 +47,7 @@ namespace SE344.Services.Facebook
         /// <returns>The ID of the newly created post if success</returns>
         public async Task<string> PostUserFeedAsync(string message)
         {
-            var postData = new Dictionary<string, string> {{"message", message}};
+            var postData = new Dictionary<string, string> { { "message", message } };
             var res = await _client.PostAsync(BuildApiUrl("me/feed"), new FormUrlEncodedContent(postData));
 
             if (res.IsSuccessStatusCode)
