@@ -31,15 +31,12 @@
                         //Commit/push example
                     }
                 </script>
-                    <label for="EventDescription">Event Description:</label>
-                    <input type="text" name="EventDescription" value="" size="300"/>
                     <label>&nbsp;</label>
                     <input type="submit" value="Submit" class="submit" />
         </form>
     </div>
 </div>
 
-</ emily is writing here------------------------------------------------------------------------------------- -->
 <div id="modalDialog2" class="modalDialog">
     <div>
         <a href="#close" title="Close" class="close">X</a>
@@ -73,8 +70,6 @@
         </form>
     </div>
 </div>
-
-</ done ------------------------------------------------------------------------------------------------------- -->
 
 <div class="row">
     <form asp-controller="Calendar" asp-action="AddEvent" method="post" role="form">
@@ -163,7 +158,23 @@
         }
         (function($) {
             $(document).ready(function () {
+                var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
+                var renderedEvents = [];
+                var newEvent;
+                for (var i = 0; i < allEvents.length; i++) {
+
+                    newEvent = {
+                        title: (allEvents[i])["title"],
+                        start: (allEvents[i])["start"],
+                        end: (allEvents[i])["end"]
+
+                    };
+                    //$('#calendarView').fullCalendar('renderEvent', newEvent);
+                    renderedEvents.push(newEvent);
+                }
+
                 $('#calendarView').fullCalendar({
+                    events: renderedEvents,
                     dayClick: function(date){
                         location.href = "#modalDialog";
                         document.getElementById("StartDateTime").value = date.format();
@@ -172,8 +183,8 @@
                     eventClick: function (event, element) {
                         location.href = "#modalDialog2";
                         document.getElementById("original_title").value = event.title;
-                        document.getElementById("original_start").value = event.start;
-                        document.getElementById("original_end").value = event.end;
+                        document.getElementById("original_start").value = event.start.format();
+                        document.getElementById("original_end").value = event.end.format();
                         document.getElementById("original_allDay").value = event.allDay;
 
                         document.getElementById("eventName1").value = event.title;
@@ -219,29 +230,12 @@
                     myReader.onload = function (e) {
                         var newEvent = JSON.parse(e.target.result);
                         document.getElementById("eN").value = newEvent.title;
-                        document.getElementById("sD").value = newEvent.start;
-                        document.getElementById("eD").value = newEvent.end;
+                        document.getElementById("sD").value = moment(newEvent.start, 'YYYY-MM-DDTHH:mm:ss.SSS').format();
+                        document.getElementById("eD").value = moment(newEvent.end, 'YYYY-MM-DDTHH:mm:ss.SSS').format();
                         document.getElementById('aD').value = newEvent.allDay;
                     }
                     myReader.readAsText(toLoad);
                 }
-
-                var fullJSONString = '@Html.Raw(JsonConvert.SerializeObject(myEvents))';
-                var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
-                var newEvent;
-                for (var i = 0; i < allEvents.length; i++) {
-
-                    newEvent = {
-                        title: (allEvents[i])["title"],
-                        start: (allEvents[i])["start"],
-                        end: (allEvents[i])["end"]
-
-                    };
-                    $('#calendarView').fullCalendar('renderEvent',newEvent);
-                }
-
-            
-
             });
         })(jQuery);
 
