@@ -214,8 +214,8 @@
                     myReader.onload = function (e) {
                         var newEvent = JSON.parse(e.target.result);
                         document.getElementById("eN").value = newEvent.title;
-                        document.getElementById("sD").value = newEvent.start;
-                        document.getElementById("eD").value = newEvent.end;
+                        document.getElementById("sD").value = moment(newEvent.start, 'YYYY-MM-DDTHH:mm:ss.SSS').format();
+                        document.getElementById("eD").value = moment(newEvent.end, 'YYYY-MM-DDTHH:mm:ss.SSS').format();
                         document.getElementById('aD').value = newEvent.allDay;
                     }
                     myReader.readAsText(toLoad);
