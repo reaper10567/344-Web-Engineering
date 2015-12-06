@@ -14,7 +14,7 @@
         
         
       
-        <form asp-controller="Calendar" asp-action="Thing" method="post" role="form">
+        <form asp-controller="Calendar" asp-action="AddEvent" method="post" role="form">
                     <label for="Event">Event Name:</label>
                     <input id="eventName" type="text" name="Event Name" value="" required/>
                     <label for="StartTime">Start DateTime:</label>
@@ -44,7 +44,7 @@
     <div>
         <a href="#close" title="Close" class="close">X</a>
 
-        <form asp-controller="Calendar" asp-action="SecondThing" method="post" role="form">
+        <form asp-controller="Calendar" asp-action="ChangeEvent" method="post" role="form">
 
             <input type="hidden" id="original_title" name ="original_title" value=""/>
             <input type="hidden" id="original_start" name ="original_start" value="" />
@@ -69,29 +69,22 @@
             </script>
             <label>&nbsp;</label>
             <input type="submit" value="Submit" class="submit" />
+            <button id="saveEvent" value="Save">Save</button>
         </form>
     </div>
 </div>
 
 </ done ------------------------------------------------------------------------------------------------------- -->
 
-
-<div id="modalDialog3" class="modalDialog">
-    <div>
-        <a href="#close" title="Close" class="close">X</a>
-        <form asp-controller="Calendar" asp-action="EventToJSON" method="post" role="form">
-            <label>Event Name: </label><input type="text" id="nameOfEvent" name="nameOfEvent" />
-            <label>&nbsp;</label>
-            <input type="submit" value="Check If Valid Event" class="submit" />
-            <a asp-controller="Calendar" asp-action="ToJSON" method="get">Save</a>
-        </form>
-    </div>
-</div>
-
 <div class="row">
-    <div class="col-xs-12">
-        <a href="#modalDialog3" class="button">Save an Event</a>
-    </div>
+    <form asp-controller="Calendar" asp-action="AddEvent" method="post" role="form">
+        <input type="hidden" id="eN" name="Event Name" />
+        <input type="hidden" id="sD" name="StartDateTime" />
+        <input type="hidden" id="eD" name="EndDateTime" />
+        <input type="checkbox" style="visibility: hidden" id="aD" />
+       <label>File to upload:</label> <input type="file" id="fileToLoad" />
+        <input type="submit" value="Submit" class="submit" />
+    </form>
 </div>
 <div class="row">
     <div class="col-xs-12">
@@ -165,6 +158,9 @@
     @{ await Html.RenderPartialAsync("_CalendarScriptsPartial"); }
 
     <script type="text/javascript">
+        function destroyClickedElement(event) {
+            document.body.removeChild(event.target);
+        }
         (function($) {
             $(document).ready(function () {
                 $('#calendarView').fullCalendar({
@@ -192,11 +188,43 @@
                             document.getElementById('EndDateTime1').disabled = false;
                             document.getElementById("EndDateTime1").value = event.end.format();
                         };
+                        
+                        document.getElementById("saveEvent").onclick = function (e) {
+                            var jsonString = JSON.stringify(event);
+                            var textFileBlob = new Blob([jsonString], { type: 'text/json' });
+                            var fileName = event.title;
+                            var downloadLink = document.createElement("a");
+                            downloadLink.download = fileName+".json";
+                            downloadLink.innerHTML = "Download File";
+                            
+                            if (window.URL != null) {
+                                downloadLink.href = window.URL.createObjectURL(textFileBlob);
+                                downloadLink.onclick = destroyClickedElement;
+                                downloadLink.style.display = "none";
+                                document.body.appendChild(downloadLink);
+                            }
+                            else {
+                                console.log("Cannot download the file");
 
+                            }
+                            downloadLink.click();
+                        }
                     }
                 });
 
-
+                document.getElementById("fileToLoad").onchange = function(e)
+                {
+                    var toLoad = e.target.files[0];
+                    var myReader = new FileReader();
+                    myReader.onload = function (e) {
+                        var newEvent = JSON.parse(e.target.result);
+                        document.getElementById("eN").value = newEvent.title;
+                        document.getElementById("sD").value = newEvent.start;
+                        document.getElementById("eD").value = newEvent.end;
+                        document.getElementById('aD').value = newEvent.allDay;
+                    }
+                    myReader.readAsText(toLoad);
+                }
 
                 var fullJSONString = '@Html.Raw(JsonConvert.SerializeObject(myEvents))';
                 var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
@@ -212,7 +240,7 @@
                     $('#calendarView').fullCalendar('renderEvent',newEvent);
                 }
 
-
+            
 
             });
         })(jQuery);

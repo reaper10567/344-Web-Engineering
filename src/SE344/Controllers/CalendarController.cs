@@ -11,13 +11,13 @@ namespace SE344.Controllers
     public class CalendarController : Controller
     {
         static List<CalendarEvent> eventsForUser = new List<CalendarEvent>();
-        static CalendarEvent eve = null;
         public ActionResult Index()
         {
             System.Diagnostics.Debug.WriteLine("Number Of Events: " + eventsForUser.Count);
             //do call to DB here
             var model = new List<EventViewModel>();
             foreach (var e in eventsForUser) {
+                System.Diagnostics.Debug.WriteLine(e);
                 var evm = new EventViewModel
                 {
                     title = e.NameOfEvent,
@@ -33,44 +33,10 @@ namespace SE344.Controllers
             //use viewmodel instead of c# object
             return View();
         }
-
-
-        public IActionResult EventToJSON(FormCollection form)
-        {
-            eve = null;
-            string name = form["nameOfEvent"];
-            foreach (CalendarEvent e in eventsForUser)
-            {
-
-                if (e.NameOfEvent == name)
-                {
-                    eve = e;
-                    break;
-                }
-
-            }
-            System.Diagnostics.Debug.WriteLine(Request.Path);
-            System.Diagnostics.Debug.WriteLine(Request.PathBase);
-            return Redirect("~/Calendar#modalDialog3");
-        }
-
-        [HttpGet]
-        public IActionResult ToJSON() {
-            if (eve != null)
-            {
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(eve);
-                System.Diagnostics.Debug.WriteLine(json);
-                return File(json, "text/json", eve.NameOfEvent + ".json");
-            }
-            else
-            {
-                return Redirect("~/Calendar#modalDialog3");
-            }
-        }
        
 
         [HttpPost]
-        public IActionResult Thing(FormCollection form)
+        public IActionResult AddEvent(FormCollection form)
         {
 
             bool allDay;
@@ -92,7 +58,7 @@ namespace SE344.Controllers
 
         // trying this out to edit events which are already on the calendar----------------------------------------
         [HttpPost]
-        public IActionResult SecondThing(FormCollection form)
+        public IActionResult ChangeEvent(FormCollection form)
         {
             bool o_allDay;
             Boolean.TryParse(form["original_allDay"], out o_allDay);
