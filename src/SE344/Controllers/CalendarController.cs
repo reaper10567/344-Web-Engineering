@@ -34,30 +34,6 @@ namespace SE344.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult EventToJSON(FormCollection form)
-        {
-            CalendarEvent eve = null;
-            string name = form["nameOfEvent"].ToString();
-            foreach (CalendarEvent e in eventsForUser)
-            {
-                
-                if (e.NameOfEvent == name)
-                {
-                    eve = e;
-                    break;
-                }
-
-            }
-            if (eve != null)
-            {
-                string json = Json(eve).ToString();
-                System.Diagnostics.Debug.WriteLine(json);
-                return File(json, "text/json", eve.NameOfEvent + ".json");
-            }
-            else
-                return RedirectToAction("Index");
-        }
        
 
         [HttpPost]
