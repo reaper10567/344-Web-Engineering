@@ -12,6 +12,10 @@ namespace SE344.Models
     /// </summary>
     public class CalendarEvent
     {
+        public CalendarEvent()
+        {
+        }
+
         /// <summary>
         /// Constructor for a CalendarEvent
         /// </summary>
