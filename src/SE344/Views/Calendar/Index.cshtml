@@ -17,7 +17,7 @@
       
         <form asp-controller="Calendar" asp-action="Thing" method="post" role="form">
                     <label for="Event">Event Name:</label>
-                    <input id="eventName" type="text" name="Event Name" value="" />
+                    <input id="eventName" type="text" name="Event Name" value="" required/>
                     <label for="StartTime">Start DateTime:</label>
                     <input type="text" id="StartDateTime" name="StartDateTime" value="" />
                     <label for="EndTime">End DateTime:</label>
@@ -29,6 +29,7 @@
                         
                         document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
                         document.getElementById('allDay').value = document.getElementById('allDay').checked;
+                        
                     }
                 </script>
                     <label for="EventDescription">Event Description:</label>
@@ -49,10 +50,10 @@
             <input type="hidden" id="original_title" name ="original_title" value=""/>
             <input type="hidden" id="original_start" name ="original_start" value="" />
             <input type="hidden" id="original_end" name ="original_end" value="" />
-            <input type="hidden" id="original_allDay" name ="original_allDay" value="" />
+            <input type="checkbox" style="visibility: hidden" id="original_allDay" name ="original_allDay" value="" />
 
             <label for="Event">Event Name:</label>
-            <input id="eventName1" type="text" name="Event Name" value="" />
+            <input id="eventName1" type="text" name="Event Name" value="" required/>
             <label for="StartTime">Start DateTime:</label>
             <input type="text" id="StartDateTime1" name="StartDateTime" value="" />
             <label for="EndTime">End DateTime:</label>
@@ -64,6 +65,7 @@
 
                         document.getElementById('EndDateTime1').disabled = document.getElementById('allDay1').checked;
                         document.getElementById('allDay1').value = document.getElementById('allDay1').checked;
+                        
                     }
             </script>
             <label>&nbsp;</label>
@@ -165,32 +167,24 @@
                         document.getElementById("original_title").value = event.title;
                         document.getElementById("original_start").value = event.start;
                         document.getElementById("original_end").value = event.end;
+                        console.log(event.end);
                         document.getElementById("original_allDay").value = event.allDay;
 
                         document.getElementById("eventName1").value = event.title;
                         document.getElementById("StartDateTime1").value = event.start.format();
-                        //document.getElementById("EndDateTime1").value = event.end.format();
-                        //document.getElementById("allDay1").checked = event.allDay;
-                        if (event.allDay.equals("true")) {
+                        if (!event.end) {
                             document.getElementById("allDay1").checked = true;
+                            document.getElementById('EndDateTime1').disabled = true;
+                            document.getElementById('EndDateTime1').value = "";
                         }
                         else {
+                            document.getElementById("allDay1").checked = false;
+                            document.getElementById('EndDateTime1').disabled = false;
                             document.getElementById("EndDateTime1").value = event.end.format();
                         };
 
                         //document.getElementById("allDay").value = event.allDay.parseBool();
                             //date.format();
-
-
-                        //event.title = "CLICKED";
-                        //var allEvents = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(myEvents))');
-                        //for (var i = 0; i < allEvents.length; i++) {
-                        //    allEvents[i].title.setEventName("CLICKED");
-                        //};
-                        //CalendarController.editEvent(event.title, event.allDay, event.start, event.end, "TOTALLY CLICKED", "", "", "");
-                        //$('#calendar').fullCalendar('updateEvent', event);
-                        //location.href = "#modalDialog";
-                        //document.getElementById("StartDateTime").value = date.format();
 
                     }
                 });
