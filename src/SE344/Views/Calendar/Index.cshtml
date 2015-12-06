@@ -57,13 +57,13 @@
             <input type="text" id="StartDateTime1" name="StartDateTime" value="" />
             <label for="EndTime">End DateTime:</label>
             <input type="text" id="EndDateTime1" name="EndDateTime" value="" />
-            <label for="allDay">All Day</label><input type="checkbox" id="allDay1" name="allDay" value="" onclick="check();" />
+            <label for="allDay">All Day</label><input type="checkbox" id="allDay1" name="allDay" value="" onclick="check1();" />
             <script>
-                    function check()
+                    function check1()
                     {
 
-                        document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
-                        document.getElementById('allDay').value = document.getElementById('allDay').checked;
+                        document.getElementById('EndDateTime1').disabled = document.getElementById('allDay1').checked;
+                        document.getElementById('allDay1').value = document.getElementById('allDay1').checked;
                     }
             </script>
             <label>&nbsp;</label>
@@ -169,8 +169,14 @@
 
                         document.getElementById("eventName1").value = event.title;
                         document.getElementById("StartDateTime1").value = event.start.format();
-                        document.getElementById("EndDateTime1").value = event.end.format();
-                        document.getElementById("allDay1").value = event.allDay.parseBool();
+                        //document.getElementById("EndDateTime1").value = event.end.format();
+                        //document.getElementById("allDay1").checked = event.allDay;
+                        if (event.allDay.equals("true")) {
+                            document.getElementById("allDay1").checked = true;
+                        }
+                        else {
+                            document.getElementById("EndDateTime1").value = event.end.format();
+                        };
 
                         //document.getElementById("allDay").value = event.allDay.parseBool();
                             //date.format();

@@ -68,7 +68,7 @@ namespace SE344.Controllers
             string o_end = form["original_end"];
 
             bool allDay;
-            Boolean.TryParse(form["allDay"], out allDay);
+            Boolean.TryParse(form["allDay1"], out allDay);
             string name = form["Event Name"];
             string start = form["StartDateTime"];
             string end = form["EndDateTime"];
