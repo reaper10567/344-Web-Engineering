@@ -167,7 +167,6 @@
                         document.getElementById("original_title").value = event.title;
                         document.getElementById("original_start").value = event.start;
                         document.getElementById("original_end").value = event.end;
-                        console.log(event.end);
                         document.getElementById("original_allDay").value = event.allDay;
 
                         document.getElementById("eventName1").value = event.title;
@@ -182,9 +181,6 @@
                             document.getElementById('EndDateTime1').disabled = false;
                             document.getElementById("EndDateTime1").value = event.end.format();
                         };
-
-                        //document.getElementById("allDay").value = event.allDay.parseBool();
-                            //date.format();
 
                     }
                 });
