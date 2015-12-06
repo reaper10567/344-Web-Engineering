@@ -1,8 +1,10 @@
-﻿@using SE344.ViewModels.Stock
+﻿@using Newtonsoft.Json.Linq
 @{
     ViewData["Title"] = "Hodepodge site of the Internet";
-    var stocks = (IEnumerable<SearchViewModel>) ViewData["Stocks"];
+    var stocks = (IEnumerable<Stock>) ViewData["Stocks"];
+    var feed = (JArray) ViewData["Feed"];
 }
+
 
 <div class="row">
     <div class="col-sm-4">
@@ -10,7 +12,7 @@
         {
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    @stock.Symbol.ToUpper()
+                    @stock.Identifier.ToUpper()
                 </div>
                 <div class="panel-body">
                     <dl class="dl-horizontal">
@@ -29,6 +31,24 @@
     </div>
 
     <div class="col-sm-8">
-        Facebook timeline here
+        <form asp-controller="Home" asp-action="Post" id="facebookPost" method="post">
+            <div class="form-group">
+                <textarea rows="4" cols="100" id="message" class="form-control" name="message" placeholder="What's on your mind?" required="required"></textarea>
+            </div>
+            <div class="form-group clearfix">
+                <input type="submit" class="btn btn-primary pull-right" value="Post to Facebook" />
+            </div>
+        </form>
+
+        @foreach (var post in feed)
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">@Html.Raw(post["message"])</div>
+                <div class="panel-footer">
+                    <a href="@post["from"]["link"]">@post["from"]["name"]</a>
+                    <span class="pull-right text-muted">@post["created_time"]</span>
+                </div>
+            </div>
+        }
     </div>
 </div>

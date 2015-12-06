@@ -12,7 +12,6 @@ using Newtonsoft.Json.Linq;
 using SE344.Models;
 using SE344.Services;
 using SE344.ViewModels.Account;
-using SE344.ViewModels.Stock;
 
 namespace SE344.Controllers
 {
@@ -27,7 +26,7 @@ namespace SE344.Controllers
         public async Task<IActionResult> Index()
         {
             var allIds = stockHistory.getKnownIdentifiers();
-            var allStocks = await Task.WhenAll(allIds.Select(stockInfo.GetQuoteAsync));
+            var allStocks = await Task.WhenAll(allIds.Select(x => new Stock(x)).Select(stockInfo.GetQuoteAsync));
 
             ViewData["stocks"] = allStocks;
             return View();
@@ -37,30 +36,45 @@ namespace SE344.Controllers
 /*
         // POST: /Stock/BuyStock
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Buy(Stock s, int shares)
         {
             EnsureDatabaseCreated(_applicationDbContext);
             return View();
         }
-
+*/
         [HttpGet]
-        [ValidateAntiForgeryToken]
         public IActionResult History()
         {
+            ViewData["transactions"] = stockHistory.getTransactions();
             return View();
         }
 
-        //???: this is a different page, right?
+        // http://stackoverflow.com/questions/6775248/export-to-csv-from-mvc-controller-and-view-displays-csv-raw-data-on-page
         [HttpGet]
-        [ValidateAntiForgeryToken]
         public IActionResult HistoryCvs()
         {
-            return View();
-        }
+            var transactions = stockHistory.getTransactions();
 
+            // What? MVC? Why would ASP.NET allow that?
+            var retVal = new System.IO.MemoryStream();
+            {
+                var writer = new System.IO.StreamWriter(retVal);
+                writer.WriteLine("\"Ticker Symbol\",\"Datetime\",\"Price Per Share\",\"Num Shares\"");
+                foreach (var line in transactions.ToList())
+                {
+                    writer.WriteLine(string.Format("\"{0}\",\"{1}\",\"{2}\",\"{3}\"",
+                                line.Key, line.Value.TransactionDate,
+                                line.Value.PricePerShare, line.Value.NumShares
+                    ));
+                }
+                writer.Flush();
+            }
+            retVal.Seek(0, System.IO.SeekOrigin.Begin);
+
+            return File(retVal, "text/csv", "transactionHistory.csv");
+        }
+/*
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult ClearHistory()
         {
             EnsureDatabaseCreated(_applicationDbContext);
@@ -68,7 +82,6 @@ namespace SE344.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult LoadHistory()
         {
             EnsureDatabaseCreated(_applicationDbContext);
@@ -77,14 +90,10 @@ namespace SE344.Controllers
 */
         #endregion
 
-        // Theoretically, this should be GET, but I'm not sure whether ASP.NET supports get forms
         [HttpGet]
         public async Task<IActionResult> SearchStocks(string symbol)
         {
-            var model = new SearchViewModel
-            {
-                Symbol = symbol
-            };
+            var model = new Stock(symbol);
 
             if (symbol == null)
             {
@@ -114,25 +123,9 @@ namespace SE344.Controllers
                 ViewData["ChartData"] = new JArray();
                 ViewData["LowHighData"] = new List<JArray>();
             }
-            model = await stockInfo.GetQuoteAsync(symbol);
+            model = await stockInfo.GetQuoteAsync(model);
 
             return View(model);
-        }
-
-
-
-        private async Task<Stock> CreateStock(string id)
-        {
-            Stock retVal = new Stock(id, await stockInfo.CurrentPrice(id));
-            retVal.Transactions.AddRange(stockHistory.getTransactions(id));
-            // TODO: retVal.note = ???
-
-            return retVal;
-        }
-
-        private int CompareStockByCurrentHoldings(Stock a, Stock b)
-        {
-            return (a.CurrentPrice * a.CurrentlyOwned).CompareTo(b.CurrentPrice * b.CurrentlyOwned);
         }
     }
 }

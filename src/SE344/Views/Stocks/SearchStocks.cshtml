@@ -1,6 +1,6 @@
 ﻿@using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
-@model SE344.ViewModels.Stock.SearchViewModel
+@model SE344.Models.Stock
 @{
     ViewData["Title"] = "Stocks";
     var symbol = ViewData["symbol"] as string;
@@ -11,6 +11,9 @@
 <ul class="nav nav-tabs nav-justified">
     <li>
         <a asp-controller="Stocks" asp-action="Index">My Stocks</a>
+    </li>
+    <li>
+        <a asp-controller="Stocks" asp-action="History">History</a>
     </li>
     <li class="active">
         <a>Search</a>
@@ -27,7 +30,7 @@
 {
     <div class="panel panel-default">
         <div class="panel-heading">
-            @Model.Symbol.ToUpper()
+            @Model.Identifier.ToUpper()
         </div>
         <div class="panel-body">
             <dl class="dl-horizontal">
@@ -70,7 +73,7 @@
                 series: [
                     {
                         type: 'candlestick',
-                        name: '@Model.Symbol.ToUpper()',
+                        name: '@Model.Identifier.ToUpper()',
                         data: JSON.parse('@Html.Raw(JsonConvert.SerializeObject(lowHighData))')
                     }
                 ]

@@ -6,24 +6,19 @@ using System.Xml;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using SE344.ViewModels.Stock;
+using SE344.Models;
 
 namespace SE344.Services
 {
     public interface IStockInformationService
     {
         /// <summary>
-        /// Return the current price of the stock with the specified ticker symbol
-        /// </summary>
-        Task<decimal> CurrentPrice(string identifier);
-
-        /// <summary>
         /// Populate a search result for a stock with the current asking price,
         /// day's high and low, and yearly high and low.
         /// </summary>
         /// <param name="symbol">the stock symbol</param>
         /// <returns>search result</returns>
-        Task<SearchViewModel> GetQuoteAsync(string symbol);
+        Task<Stock> GetQuoteAsync(Stock stock);
 
         /// <summary>
         /// Get historical data for a stock
@@ -37,58 +32,14 @@ namespace SE344.Services
 
     public class YahooStockInformationService : IStockInformationService
     {
-        public async Task<decimal> CurrentPrice(string identifier)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="symbol">Contains the Identifier to search.</param>
+        /// <returns></returns>
+        public async Task<Stock> GetQuoteAsync(Stock stock)
         {
-            var retVal = new StringBuilder();
-
-            //???: is this actually a rule, or just a coincidence
-            var fourUppercaseLetters = new Regex("^[A-Za-z]{1,4}$");
-            if (1 == fourUppercaseLetters.Matches(identifier).Count)
-            {
-                var query = new Uri("https://query.yahooapis.com/v1/public/yql?q=select%20symbol%2C%20Ask%2C%20Name%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22" + identifier + "%22)%09%09&diagnostics=false&env=http%3A%2F%2Fdatatables.org%2Falltables.env");
-                var request = WebRequest.Create(query);
-                var response = await request.GetResponseAsync();
-
-                if ("text/xml; charset=UTF-8" == response.ContentType)
-                {
-                    var responseStream = response.GetResponseStream();
-
-                    if (responseStream != null)
-                    {
-                        var xmlReader = XmlReader.Create(responseStream);
-                        while (xmlReader.Read())
-                        {
-                            xmlReader.MoveToElement();
-                            // assume only one <Ask> element in document
-                            if ("Ask" != xmlReader.LocalName) continue;
-
-                            // basically: ReadInnerText
-                            var pReader = xmlReader.ReadSubtree();
-                            while (pReader.Read())
-                            {
-                                if (pReader.NodeType == XmlNodeType.Text)
-                                {
-                                    retVal.Append(pReader.Value);
-                                }
-                            }
-                        }
-                    }
-                    response.Close();
-                    return decimal.Parse(retVal.ToString());
-                }
-                else
-                {
-                    throw new ApplicationException("response from external API was not of expected type");
-                }
-            }
-            else
-            {
-                throw new FormatException("Invalid Ticker Symbol");
-            }
-        }
-
-        public async Task<SearchViewModel> GetQuoteAsync(string symbol)
-        {
+            var symbol = stock.Identifier;
             if (symbol == null)
             {
                 throw new ArgumentNullException();
@@ -99,48 +50,42 @@ namespace SE344.Services
                 symbol +
                 "%22)%0A%09%09&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
 
-            SearchViewModel stockModel;
             try
             {
                 var res = await new HttpClient().GetStringAsync(endpoint);
 
                 var quote = JObject.Parse(res)["query"]["results"]["quote"];
-                stockModel = new SearchViewModel
+
+                stock.CurrentPrice = (decimal?) quote["Ask"];
+
+                if (stock.Identifier != ((string) quote["symbol"]))
                 {
-                    Symbol = (string) quote["symbol"],
-                    CurrentPrice = (decimal?) quote["Ask"],
-                    DaysHigh = (decimal?) quote["DaysHigh"],
-                    DaysLow = (decimal?) quote["DaysLow"],
-                    YearsHigh = (decimal?) quote["YearHigh"],
-                    YearsLow = (decimal?) quote["YearLow"]
-                };
+                    throw new InvalidOperationException("Did not recieve correct stock quote");
+                }
+                stock.CurrentPrice = (decimal?) quote["Ask"];
+                stock.DaysHigh = (decimal?) quote["DaysHigh"];
+                stock.DaysLow = (decimal?) quote["DaysLow"];
+                stock.YearsHigh = (decimal?) quote["YearHigh"];
+                stock.YearsLow = (decimal?) quote["YearLow"];
             }
             catch (System.Net.Http.HttpRequestException e)
             {
-                stockModel = new SearchViewModel
-                {
-                    Symbol = "",
-                    CurrentPrice = null,
-                    DaysHigh = null,
-                    DaysLow = null,
-                    YearsHigh = null,
-                    YearsLow = null
-                };
+                stock.CurrentPrice = null;
+                stock.DaysHigh = null;
+                stock.DaysLow = null;
+                stock.YearsHigh = null;
+                stock.YearsLow = null;
             }
             catch (System.InvalidOperationException e)
             {
-                stockModel = new SearchViewModel
-                {
-                    Symbol = "",
-                    CurrentPrice = null,
-                    DaysHigh = null,
-                    DaysLow = null,
-                    YearsHigh = null,
-                    YearsLow = null
-                };
+                stock.CurrentPrice = null;
+                stock.DaysHigh = null;
+                stock.DaysLow = null;
+                stock.YearsHigh = null;
+                stock.YearsLow = null;
             }
 
-            return stockModel;
+            return stock;
         }
 
         public async Task<string> GetHistoryInfoAsync(string symbol, DateTime start, DateTime end)

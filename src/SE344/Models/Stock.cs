@@ -9,10 +9,9 @@ namespace SE344.Models
     /// </summary>
     public class Stock
     {
-        public Stock(string identifier, decimal currentPrice)
+        public Stock(string identifier)
         {
             Identifier = identifier;
-            CurrentPrice = currentPrice;
         }
 
         /// <summary>
@@ -23,7 +22,12 @@ namespace SE344.Models
         /// <summary>
         /// The current price of this stock
         /// </summary>
-        public decimal CurrentPrice { get; }
+        public decimal? CurrentPrice { get; set; }
+
+        public decimal? DaysHigh { get; set; }
+        public decimal? DaysLow { get; set; }
+        public decimal? YearsHigh { get; set; }
+        public decimal? YearsLow { get; set; }
 
         /// <summary>
         /// A set of transactions made by the user relating to this stock.
