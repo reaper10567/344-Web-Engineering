@@ -38,7 +38,7 @@ namespace SE344.Controllers
         public IActionResult EventToJSON(FormCollection form)
         {
             CalendarEvent eve = null;
-            string name = form["nameOfEvent"].ToString();
+            string name = form["nameOfEvent"];
             foreach (CalendarEvent e in eventsForUser)
             {
                 
@@ -51,7 +51,7 @@ namespace SE344.Controllers
             }
             if (eve != null)
             {
-                string json = Json(eve).ToString();
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(eve);
                 System.Diagnostics.Debug.WriteLine(json);
                 return File(json, "text/json", eve.NameOfEvent + ".json");
             }
