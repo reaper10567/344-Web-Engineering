@@ -14,6 +14,11 @@ namespace SE344.Models
             PricePerShare = pricePerShare;
             NumShares = numShares;
         }
+
+        public long Id { get; set; }
+        public string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
+        public string StockTicker { get; set; }
         
         /// <summary>
         /// The date and time that transaction took place
