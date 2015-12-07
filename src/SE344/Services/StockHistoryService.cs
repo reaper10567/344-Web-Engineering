@@ -100,7 +100,7 @@ namespace SE344.Services
         public void clear(ApplicationDbContext db, ApplicationUser user)
         {
             var elemsToRemove = db.StockTransactions.Where(x => x.UserId.Equals(user.Id));
-            elemsToRemove.Select(x => db.StockTransactions.Remove(x));
+            elemsToRemove.ToList().ForEach(x => db.StockTransactions.Remove(x));
             db.SaveChanges();
         }
     }
