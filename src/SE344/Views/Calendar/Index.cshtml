@@ -184,7 +184,7 @@
                         location.href = "#modalDialog2";
                         document.getElementById("original_title").value = event.title;
                         document.getElementById("original_start").value = event.start.format();
-                        document.getElementById("original_end").value = event.end.format();
+                        document.getElementById("original_end").value = event.end ? event.end.format() : event.start.format();
                         document.getElementById("original_allDay").value = event.allDay;
 
                         document.getElementById("eventName1").value = event.title;

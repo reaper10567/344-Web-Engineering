@@ -38,8 +38,8 @@ namespace SE344.Models
         public CalendarEvent(string name, string date)
         {
             NameOfEvent = name;
-            StartTime = DateTime.Parse(date);
-            EndTime = StartTime;
+            StartTime = DateTime.Parse(date).Date;
+            EndTime = StartTime.AddDays(1);
             AllDayEvent = true;
         }
 
