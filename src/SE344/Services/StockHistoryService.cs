@@ -29,19 +29,31 @@ namespace SE344.Services
         void clear(ApplicationDbContext db, ApplicationUser user);
     }
 
-    public class StubStockHistoryService
+    public class StubStockHistoryService : IStockHistoryService
     {
         public IEnumerable<string> getKnownIdentifiers(ApplicationDbContext db, ApplicationUser user)
         {
-            return this.getTransactions(db, user).ToList().Select(x => x.Key).Distinct();
+            return this.transactions().Select(x => x.Key).Distinct();
         }
 
         public IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user, string identifier)
         {
-            return this.getTransactions(db, user).ToList().FindAll(x => x.Key == identifier).Select(x => x.Value);
+            return this.transactions().FindAll(x => x.Key == identifier).Select(x => x.Value);
         }
 
-        public IEnumerable<KeyValuePair<string, StockTransaction>> getTransactions(ApplicationDbContext db, ApplicationUser user)
+        public IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user)
+        {
+            var retVal = transactions();
+            retVal.ForEach(x => x.Value.StockTicker = x.Key);
+
+            return retVal.Select(x => x.Value);
+        }
+
+        public void addTransaction(ApplicationDbContext db, ApplicationUser user, Stock stock, StockTransaction model) { }
+
+        public void clear(ApplicationDbContext db, ApplicationUser user) { }
+
+        private List<KeyValuePair<string, StockTransaction>> transactions()
         {
             List<KeyValuePair<string, StockTransaction>> retVal = new List<KeyValuePair<string, StockTransaction>>();
 
@@ -56,10 +68,6 @@ namespace SE344.Services
 
             return retVal;
         }
-
-        public void addTransaction(ApplicationDbContext db, ApplicationUser user, Stock stock, StockTransaction model) { }
-
-        public void clear(ApplicationDbContext db, ApplicationUser user) { }
     }
 
     public class DbStockHistoryService : IStockHistoryService

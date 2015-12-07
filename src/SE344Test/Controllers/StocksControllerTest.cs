@@ -49,7 +49,7 @@ namespace SE344Test.Controllers
         }
 
         [Fact]
-        public void HistoryDoesNotError()
+        public async Task HistoryDoesNotError()
         {
             var stockHistory = new StubStockHistoryService();
             var dut = new StocksController(
@@ -59,12 +59,12 @@ namespace SE344Test.Controllers
                 null,
                 null
             );
-            var result = dut.History() as ViewResult;
-            Assert.Equal(stockHistory.getTransactions(), result.ViewData["transactions"]);
+            var result = (await dut.History()) as ViewResult;
+            Assert.Equal(stockHistory.getTransactions(null, null), result.ViewData["transactions"]);
         }
 
         // [Fact] fails in unit-test-land despite succeeding in iis-land
-        public void HistoryCsvDoesNotError()
+        public async Task HistoryCsvDoesNotError()
         {
             var stockHistory = new StubStockHistoryService();
             var dut = new StocksController(
@@ -74,7 +74,7 @@ namespace SE344Test.Controllers
                 new StubStockNoteService(),
                 null
             );
-            var result = dut.HistoryCvs() as FileStreamResult;
+            var result = (await dut.HistoryCvs()) as FileStreamResult;
             Assert.Equal(result.FileDownloadName, "transactionHistory.csv");
         }
 
@@ -102,13 +102,13 @@ namespace SE344Test.Controllers
         public String Note { get; set; }
         public String Symbol { get; set; }
 
-        public Task<Stock> getNote(Stock stock)
+        public Task<Stock> getNote(ApplicationDbContext db, ApplicationUser user, Stock stock)
         {
             stock.Note = this.Note;
             return new Task<Stock>(() => stock);
         }
         
-        public Task setNote(Stock stock)
+        public Task setNote(ApplicationDbContext db, ApplicationUser user, Stock stock)
         {
             if (wasCalled) { throw new Exception("SetNote called twice"); }
             this.wasCalled = true;
