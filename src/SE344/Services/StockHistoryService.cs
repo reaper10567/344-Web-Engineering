@@ -12,36 +12,36 @@ namespace SE344.Services
         /// List stock identifiers that may have transactions associated with them.
         /// Anything not on this list will have zero transactions associated with it.
         /// </summary>
-        IEnumerable<string> getKnownIdentifiers();
+        IEnumerable<string> getKnownIdentifiers(ApplicationDbContext db, ApplicationUser user);
 
         /// <summary>
         /// Return all transactions
         /// </summary>
-        IEnumerable<KeyValuePair<string, StockTransaction>> getTransactions();
+        IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user);
 
         /// <summary>
         /// Return transactions filtered by identifier
         /// </summary>
-        IEnumerable<StockTransaction> getTransactions(string identifier);
+        IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user, string identifier);
 
-        void addTransaction(Stock stock, StockTransaction model);
+        void addTransaction(ApplicationDbContext db, ApplicationUser user, Stock stock, StockTransaction model);
 
-        void clear();
+        void clear(ApplicationDbContext db, ApplicationUser user);
     }
 
-    public class StubStockHistoryService : IStockHistoryService
+    public class StubStockHistoryService
     {
-        public IEnumerable<string> getKnownIdentifiers()
+        public IEnumerable<string> getKnownIdentifiers(ApplicationDbContext db, ApplicationUser user)
         {
-            return this.getTransactions().ToList().Select(x => x.Key).Distinct();
+            return this.getTransactions(db, user).ToList().Select(x => x.Key).Distinct();
         }
 
-        public IEnumerable<StockTransaction> getTransactions(string identifier)
+        public IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user, string identifier)
         {
-            return this.getTransactions().ToList().FindAll(x => x.Key == identifier).Select(x => x.Value);
+            return this.getTransactions(db, user).ToList().FindAll(x => x.Key == identifier).Select(x => x.Value);
         }
 
-        public IEnumerable<KeyValuePair<string, StockTransaction>> getTransactions()
+        public IEnumerable<KeyValuePair<string, StockTransaction>> getTransactions(ApplicationDbContext db, ApplicationUser user)
         {
             List<KeyValuePair<string, StockTransaction>> retVal = new List<KeyValuePair<string, StockTransaction>>();
 
@@ -57,31 +57,40 @@ namespace SE344.Services
             return retVal;
         }
 
-        public void addTransaction(Stock stock, StockTransaction model) { }
+        public void addTransaction(ApplicationDbContext db, ApplicationUser user, Stock stock, StockTransaction model) { }
 
-        public void clear() { }
+        public void clear(ApplicationDbContext db, ApplicationUser user) { }
     }
 
-    /*
-    public class DbStockHistoryService : IStockInformationService
+    public class DbStockHistoryService : IStockHistoryService
     {
-        public List<StockTransaction> getTransactions(string identifier)
+        public IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user)
         {
-            List<StockTransaction> retVal = new List<StockTransaction>();
+            return db.StockTransactions.Where(x => x.User == user).AsEnumerable();
+        }
+        public IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user, string tickerSymbol)
+        {
+            return db.StockTransactions.Where(x => x.StockTicker == tickerSymbol && x.User == user);
+        }
+        public IEnumerable<string> getKnownIdentifiers(ApplicationDbContext db, ApplicationUser user)
+        {
+            var transactions = this.getTransactions(db, user);
+            var ids = transactions.Select(x => x.StockTicker).Distinct();
 
-            //???: is this actually a rule, or just a coincidence
-            var FOUR_UPPERCASE_LETTERS = new Regex("[A-Z]{1,4}");
-            if (FOUR_UPPERCASE_LETTERS.matches(identifier))
-            {
+            var idPrice = ids.Select(x => Tuple.Create(x, transactions.Where(y => y.StockTicker == x).Select(y => y.TotalPrice).Sum()));
 
-            }
-            else
-            {
-                throw new IllegalArgumentException("Invalid Ticker Symbol");
-            }
+            return idPrice.OrderBy(x => x.Item2).Select(x => x.Item1).Take(6);
+        }
+        
+        public void addTransaction(ApplicationDbContext db, ApplicationUser user, Stock stock, StockTransaction model) {
+            model.StockTicker = stock.Identifier;
+            db.StockTransactions.Add(model);
         }
 
-        public void addTransaction(Stock stock, StockTransaction model) { }
+        public void clear(ApplicationDbContext db, ApplicationUser user)
+        {
+            var elemsToRemove = db.StockTransactions.Where(x => x.User == user);
+            elemsToRemove.Select(x => db.StockTransactions.Remove(x));
+        }
     }
-    */
 }

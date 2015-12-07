@@ -41,7 +41,7 @@ namespace SE344.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var allIds = stockHistory.getKnownIdentifiers();
+            var allIds = stockHistory.getKnownIdentifiers(_applicationDbContext, await GetCurrentUserAsync());
             var allStocks = await Task.WhenAll(allIds.Select(x => new Stock(x)).Select(stockInfo.GetQuoteAsync));
 
             ViewData["stocks"] = allStocks;
@@ -59,23 +59,23 @@ namespace SE344.Controllers
             stock = await stockInfo.GetQuoteAsync(stock);
 
             var model = new StockTransaction(DateTime.Now, stock.CurrentPrice.Value, shares);
-            stockHistory.addTransaction(stock, model);
+            stockHistory.addTransaction(_applicationDbContext, await GetCurrentUserAsync(), stock, model);
 
             return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
         }
 
         [HttpGet]
-        public IActionResult History()
+        public async Task<IActionResult> History()
         {
-            ViewData["transactions"] = stockHistory.getTransactions();
+            ViewData["transactions"] = stockHistory.getTransactions(_applicationDbContext, await GetCurrentUserAsync());
             return View();
         }
 
         // http://stackoverflow.com/questions/6775248/export-to-csv-from-mvc-controller-and-view-displays-csv-raw-data-on-page
         [HttpGet]
-        public IActionResult HistoryCvs()
+        public async Task<IActionResult> HistoryCvs()
         {
-            var transactions = stockHistory.getTransactions();
+            var transactions = stockHistory.getTransactions(_applicationDbContext, await GetCurrentUserAsync());
 
             // What? MVC? Why would ASP.NET allow that?
             var retVal = new System.IO.MemoryStream();
@@ -85,8 +85,8 @@ namespace SE344.Controllers
                 foreach (var line in transactions.ToList())
                 {
                     writer.WriteLine(string.Format("\"{0}\",\"{1}\",\"{2}\",\"{3}\"",
-                                line.Key, line.Value.TransactionDate,
-                                line.Value.PricePerShare, line.Value.NumShares
+                                line.StockTicker, line.TransactionDate,
+                                line.PricePerShare, line.NumShares
                     ));
                 }
                 writer.Flush();
@@ -98,15 +98,15 @@ namespace SE344.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ClearHistory()
+        public async Task<IActionResult> ClearHistory()
         {
-            stockHistory.clear();
+            stockHistory.clear(_applicationDbContext, await GetCurrentUserAsync());
             return Redirect("/Stocks/History");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult LoadHistory(System.Web.HttpPostedFileBase file)
+        public async Task<IActionResult> LoadHistory(System.Web.HttpPostedFileBase file)
         {
             if (file != null && file.ContentLength > 0)
             {
@@ -118,7 +118,7 @@ namespace SE344.Controllers
 
                     var stock = new Stock(line[0]);
                     var model = new StockTransaction(DateTime.Parse(line[1]), Decimal.Parse(line[2]), int.Parse(line[3]));
-                    stockHistory.addTransaction(stock, model);
+                    stockHistory.addTransaction(_applicationDbContext, await GetCurrentUserAsync(), stock, model);
                 }
             }
 
@@ -181,4 +181,5 @@ namespace SE344.Controllers
             return await _userManager.FindByIdAsync(Context.User.GetUserId());
         }
     }
+
 }

@@ -9,21 +9,36 @@ using Microsoft.AspNet.Mvc;
 using SE344.Services;
 using SE344.Services.Facebook;
 using SE344.Models;
+using Microsoft.AspNet.Identity;
 
 namespace SE344.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        readonly IStockHistoryService _stockHistory = new StubStockHistoryService();
-        readonly IStockInformationService _stockInfo = new YahooStockInformationService();
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IStockHistoryService _stockHistory;
+        private readonly IStockInformationService _stockInfo;
         private readonly FacebookApiService _facebookApi = new FacebookApiService();
+
+        public HomeController(
+            UserManager<ApplicationUser> userManager,
+            IStockHistoryService stockHistory,
+            IStockInformationService stockInfo,
+            ApplicationDbContext applicationDbContext)
+        {
+            _stockHistory = stockHistory;
+            _stockInfo = stockInfo;
+            _userManager = userManager;
+            _applicationDbContext = applicationDbContext;
+        }
 
         public async Task<IActionResult> Index()
         {
             _facebookApi.AccessToken = Context.User.FindFirstValue("access_token");
 
-            var allIds = _stockHistory.getKnownIdentifiers();
+            var allIds = _stockHistory.getKnownIdentifiers(_applicationDbContext, await GetCurrentUserAsync());
             var allStocks = Task.WhenAll(allIds.Select(x => new Stock(x)).Select(_stockInfo.GetQuoteAsync));
 
             var facebookFeedTask = _facebookApi.GetUserFeedAsync();
@@ -58,6 +73,11 @@ namespace SE344.Controllers
         public IActionResult Error()
         {
             return View("~/Views/Shared/Error.cshtml");
+        }
+
+        private async Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            return await _userManager.FindByIdAsync(Context.User.GetUserId());
         }
     }
 }

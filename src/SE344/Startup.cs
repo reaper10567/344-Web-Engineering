@@ -95,8 +95,8 @@ namespace SE344
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IStockInformationService, YahooStockInformationService>();
-            services.AddTransient<IStockHistoryService, StubStockHistoryService>();
-            services.AddTransient<IStockNoteService, StubStockNoteService>();
+            services.AddTransient<IStockHistoryService, DbStockHistoryService>();
+            services.AddTransient<IStockNoteService, DbStockNoteService>();
 
             ServiceProvider = services.BuildServiceProvider();
         }
