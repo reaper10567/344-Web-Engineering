@@ -7,143 +7,121 @@
 }
 
 
-
-<div id="modalDialog" class="modalDialog">
-    <div>
-        <a href="#close" title="Close" class="close">X</a>
-        
-        
-      
-        <form asp-controller="Calendar" asp-action="AddEvent" method="post" role="form">
-                    <label for="Event">Event Name:</label>
-                    <input id="eventName" type="text" name="Event Name" value="" required/>
-                    <label for="StartTime">Start DateTime:</label>
-                    <input type="text" id="StartDateTime" name="StartDateTime" value="" />
-                    <label for="EndTime">End DateTime:</label>
-                    <input type="text" id="EndDateTime" name="EndDateTime" value="" />
-                    <label for="allDay">All Day</label><input type="checkbox" id="allDay" name="allDay" value="" onclick="check();"/> 
-                <script>
-                    function check()
-                    {
-                        
-                        document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
-                        document.getElementById('allDay').value = document.getElementById('allDay').checked;
-                        //Commit/push example
-                    }
-                </script>
-                    <label>&nbsp;</label>
-                    <input type="submit" value="Submit" class="submit" />
-        </form>
+<div id="modalDialog" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">New Event</h4>
+            </div>
+            <form asp-controller="Calendar" asp-action="AddEvent" method="post" role="form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="eventName">Event Name:</label>
+                        <input id="eventName" class="form-control" type="text" name="Event Name" value="" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="StartDateTime">Start DateTime:</label>
+                        <input type="text" id="StartDateTime" class="form-control" name="StartDateTime" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="EndDateTime">End DateTime:</label>
+                        <input type="text" id="EndDateTime" class="form-control" name="EndDateTime" value="" />
+                    </div>
+                    <div class="checkbox">
+                        <label for="allDay">
+                            <input type="checkbox" id="allDay" name="allDay" value="" onclick="check();" /> All Day
+                        </label>
+                    </div>
+                    <script>
+                        function check() {
+                            document.getElementById('EndDateTime').disabled = document.getElementById('allDay').checked;
+                            document.getElementById('allDay').value = document.getElementById('allDay').checked;
+                            //Commit/push example
+                        }
+                    </script>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Submit" class="submit btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div id="modalDialog2" class="modalDialog">
-    <div>
-        <a href="#close" title="Close" class="close">X</a>
 
-        <form asp-controller="Calendar" asp-action="ChangeEvent" method="post" role="form">
 
-            <input type="hidden" id="original_title" name ="original_title" value=""/>
-            <input type="hidden" id="original_start" name ="original_start" value="" />
-            <input type="hidden" id="original_end" name ="original_end" value="" />
-            <input type="checkbox" style="visibility: hidden" id="original_allDay" name ="original_allDay" value="" />
+<div id="modalDialog2" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit Event</h4>
+            </div>
+            <form asp-controller="Calendar" asp-action="ChangeEvent" method="post" role="form">
+                <div class="modal-body">
+                    <input type="hidden" id="original_title" name="original_title" value="" />
+                    <input type="hidden" id="original_start" name="original_start" value="" />
+                    <input type="hidden" id="original_end" name="original_end" value="" />
+                    <input type="checkbox" style="display: none;" id="original_allDay" name="original_allDay" value="" />
 
-            <label for="Event">Event Name:</label>
-            <input id="eventName1" type="text" name="Event Name" value="" required/>
-            <label for="StartTime">Start DateTime:</label>
-            <input type="text" id="StartDateTime1" name="StartDateTime" value="" />
-            <label for="EndTime">End DateTime:</label>
-            <input type="text" id="EndDateTime1" name="EndDateTime" value="" />
-            <label for="allDay">All Day</label><input type="checkbox" id="allDay1" name="allDay" value="" onclick="check1();" />
-            <script>
-                    function check1()
-                    {
-
-                        document.getElementById('EndDateTime1').disabled = document.getElementById('allDay1').checked;
-                        document.getElementById('allDay1').value = document.getElementById('allDay1').checked;
-                        
-                    }
-            </script>
-            <label>&nbsp;</label>
-            <input type="submit" value="Submit" class="submit" />
-            <button id="saveEvent" value="Save">Save</button>
-        </form>
+                    <div class="form-group">
+                        <label for="eventName1">Event Name:</label>
+                        <input id="eventName1" class="form-control" type="text" name="Event Name" value="" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="StartDateTime1">Start DateTime:</label>
+                        <input type="text" id="StartDateTime1" class="form-control" name="StartDateTime" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="EndDateTime1">End DateTime:</label>
+                        <input type="text" id="EndDateTime1" class="form-control" name="EndDateTime" value="" />
+                    </div>
+                    <div class="checkbox">
+                        <label for="allDay1">
+                            <input type="checkbox" id="allDay1" name="allDay" value="" onclick="check1();" /> All Day
+                        </label>
+                    </div>
+                    <script>
+                        function check1() {
+                            document.getElementById('EndDateTime1').disabled = document.getElementById('allDay1').checked;
+                            document.getElementById('allDay1').value = document.getElementById('allDay1').checked;
+                        }
+                    </script>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Submit" class="submit btn btn-primary" />
+                    <button class="btn btn-default pull-left" id="saveEvent" value="Export to JSON">Export to JSON</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    <form asp-controller="Calendar" asp-action="AddEvent" method="post" role="form">
-        <input type="hidden" id="eN" name="Event Name" />
-        <input type="hidden" id="sD" name="StartDateTime" />
-        <input type="hidden" id="eD" name="EndDateTime" />
-        <input type="checkbox" style="visibility: hidden" id="aD" />
-       <label>File to upload:</label> <input type="file" id="fileToLoad" />
-        <input type="submit" value="Submit" class="submit" />
-    </form>
-</div>
+
 <div class="row">
     <div class="col-xs-12">
         <div id="calendarView"></div>
     </div>
 </div>
 
-<style type="text/css">
-    .modalDialog {
-   position: fixed;
-   font-family: Arial, Helvetica, sans-serif;
-   top: 0;
-   right: 0;
-   bottom: 0;
-   left: 0;
-   background: rgba(0, 0, 0, 0.8);
-   z-index: 99999;
-   opacity:0;
-   -webkit-transition: opacity 400ms ease-in;
-   -moz-transition: opacity 400ms ease-in;
-   transition: opacity 400ms ease-in;
-   pointer-events: none;
-}
-.modalDialog:target {
-   opacity:1;
-   pointer-events: auto;
-}
-.modalDialog > div {
-   width: 400px;
-   position: relative;
-   margin: 10% auto;
-   padding: 5px 20px 13px 20px;
-   border-radius: 10px;
-   background: #fff;
-   background: -moz-linear-gradient(#fff, #999);
-   background: -webkit-linear-gradient(#fff, #999);
-   background: -o-linear-gradient(#fff, #999);
-}
-.close {
-   background: #606061
-;
-   color: #FFFFFF
-;
-   line-height: 25px;
-   position: absolute;
-   right: -12px;
-   text-align: center;
-   top: -10px;
-   width: 24px;
-   text-decoration: none;
-   font-weight: bold;
-   -webkit-border-radius: 12px;
-   -moz-border-radius: 12px;
-   border-radius: 12px;
-   -moz-box-shadow: 1px 1px 3px #000;
-   -webkit-box-shadow: 1px 1px 3px #000;
-   box-shadow: 1px 1px 3px #000;
-}
-.close:hover {
-   background: #00d9ff
-;
-} 
-</style>
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Import An Event</h3>
+        <form asp-controller="Calendar" asp-action="AddEvent" method="post" role="form">
+            <input type="hidden" id="eN" name="Event Name" />
+            <input type="hidden" id="sD" name="StartDateTime" />
+            <input type="hidden" id="eD" name="EndDateTime" />
+            <input type="checkbox" style="display: none;" id="aD" />
 
+            <div class="form-group">
+                <label>File to upload:</label>
+                <input type="file" id="fileToLoad" />
+            </div>
+            <input type="submit" value="Import" class="submit btn btn-default" />
+        </form>
+    </div>
+</div>
 
 @section Stylesheets {
     @{ await Html.RenderPartialAsync("_CalendarStylesheetsPartial"); }
@@ -176,12 +154,14 @@
                 $('#calendarView').fullCalendar({
                     events: renderedEvents,
                     dayClick: function(date){
-                        location.href = "#modalDialog";
+                        //location.href = "#modalDialog";
+                        $('#modalDialog').modal('show');
                         document.getElementById("StartDateTime").value = date.format();
 
                     },
                     eventClick: function (event, element) {
-                        location.href = "#modalDialog2";
+                        //location.href = "#modalDialog2";
+                        $('#modalDialog2').modal('show');
                         document.getElementById("original_title").value = event.title;
                         document.getElementById("original_start").value = event.start.format();
                         document.getElementById("original_end").value = event.end ? event.end.format() : event.start.format();
