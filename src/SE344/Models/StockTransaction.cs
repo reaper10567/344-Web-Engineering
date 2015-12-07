@@ -8,6 +8,10 @@ namespace SE344.Models
     /// </summary>
     public class StockTransaction
     {
+        public StockTransaction()
+        {
+        }
+
         public StockTransaction(DateTime transactionDate, decimal pricePerShare, int numShares)
         {
             TransactionDate = transactionDate;
@@ -23,18 +27,18 @@ namespace SE344.Models
         /// <summary>
         /// The date and time that transaction took place
         /// </summary>
-        public DateTime TransactionDate { get; }
+        public DateTime TransactionDate { get; set; }
         
         /// <summary>
         /// The stock's price at the datetime that the transaction took place
         /// </summary>
-        public decimal PricePerShare { get; }
+        public decimal PricePerShare { get; set; }
         
         /// <summary>
         /// The number of shares bought at the time of the transaction.
         /// Will be a negative number if the transaction was a sale instead of a purchase
         /// </summary>
-        public int NumShares { get; }
+        public int NumShares { get; set; }
         
         /// <summary>
         /// The cost of the transaction

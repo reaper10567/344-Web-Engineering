@@ -34,6 +34,7 @@ namespace SE344.Models
             {
                 b.Property<long>("Id").ValueGeneratedOnAdd();
                 b.Key(e => e.Id);
+                b.Ignore(s => s.TotalPrice);
                 b.ToTable("StockTransactions");
                 b.Reference(e => e.User).InverseCollection().ForeignKey(e => e.UserId);
             });
