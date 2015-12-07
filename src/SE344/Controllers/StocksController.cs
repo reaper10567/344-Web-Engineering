@@ -18,14 +18,30 @@ namespace SE344.Controllers
     [Authorize]
     public class StocksController : Controller
     {
-        readonly IStockHistoryService stockHistory = new StubStockHistoryService();
-        readonly IStockInformationService stockInfo = new YahooStockInformationService();
+        private readonly IStockHistoryService stockHistory;
+        private readonly IStockInformationService stockInfo;
+        private readonly IStockNoteService stockNote;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _applicationDbContext;
 
+        public StocksController(
+            UserManager<ApplicationUser> userManager,
+            IStockHistoryService stockHistory,
+            IStockInformationService stockInfo,
+            IStockNoteService stockNote,
+            ApplicationDbContext applicationDbContext)
+        {
+            this.stockHistory = stockHistory;
+            this.stockInfo = stockInfo;
+            this.stockNote = stockNote;
+            _userManager = userManager;
+            _applicationDbContext = applicationDbContext;
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var allIds = stockHistory.getKnownIdentifiers();
+            var allIds = stockHistory.getKnownIdentifiers(_applicationDbContext, await GetCurrentUserAsync());
             var allStocks = await Task.WhenAll(allIds.Select(x => new Stock(x)).Select(stockInfo.GetQuoteAsync));
 
             ViewData["stocks"] = allStocks;
@@ -33,27 +49,33 @@ namespace SE344.Controllers
         }
 
         #region "transaction history"
-/*
+
         // POST: /Stock/BuyStock
         [HttpPost]
-        public IActionResult Buy(Stock s, int shares)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Buy(string symbol, int shares)
         {
-            EnsureDatabaseCreated(_applicationDbContext);
-            return View();
+            var stock = new Stock(symbol);
+            stock = await stockInfo.GetQuoteAsync(stock);
+
+            var model = new StockTransaction(DateTime.Now, stock.CurrentPrice.Value, shares);
+            stockHistory.addTransaction(_applicationDbContext, await GetCurrentUserAsync(), stock, model);
+
+            return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
         }
-*/
+
         [HttpGet]
-        public IActionResult History()
+        public async Task<IActionResult> History()
         {
-            ViewData["transactions"] = stockHistory.getTransactions();
+            ViewData["transactions"] = stockHistory.getTransactions(_applicationDbContext, await GetCurrentUserAsync());
             return View();
         }
 
         // http://stackoverflow.com/questions/6775248/export-to-csv-from-mvc-controller-and-view-displays-csv-raw-data-on-page
         [HttpGet]
-        public IActionResult HistoryCvs()
+        public async Task<IActionResult> HistoryCvs()
         {
-            var transactions = stockHistory.getTransactions();
+            var transactions = stockHistory.getTransactions(_applicationDbContext, await GetCurrentUserAsync());
 
             // What? MVC? Why would ASP.NET allow that?
             var retVal = new System.IO.MemoryStream();
@@ -63,8 +85,8 @@ namespace SE344.Controllers
                 foreach (var line in transactions.ToList())
                 {
                     writer.WriteLine(string.Format("\"{0}\",\"{1}\",\"{2}\",\"{3}\"",
-                                line.Key, line.Value.TransactionDate,
-                                line.Value.PricePerShare, line.Value.NumShares
+                                line.StockTicker, line.TransactionDate,
+                                line.PricePerShare, line.NumShares
                     ));
                 }
                 writer.Flush();
@@ -73,21 +95,35 @@ namespace SE344.Controllers
 
             return File(retVal, "text/csv", "transactionHistory.csv");
         }
-/*
+
         [HttpPost]
-        public IActionResult ClearHistory()
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClearHistory()
         {
-            EnsureDatabaseCreated(_applicationDbContext);
-            return View();
+            stockHistory.clear(_applicationDbContext, await GetCurrentUserAsync());
+            return Redirect("/Stocks/History");
         }
 
         [HttpPost]
-        public IActionResult LoadHistory()
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoadHistory(System.Web.HttpPostedFileBase file)
         {
-            EnsureDatabaseCreated(_applicationDbContext);
-            return View();
+            if (file != null && file.ContentLength > 0)
+            {
+                var reader = new Microsoft.VisualBasic.FileIO.TextFieldParser(file.InputStream);
+                reader.SetDelimiters(",");
+                while (!reader.EndOfData)
+                {
+                    var line = reader.ReadFields();
+
+                    var stock = new Stock(line[0]);
+                    var model = new StockTransaction(DateTime.Parse(line[1]), Decimal.Parse(line[2]), int.Parse(line[3]));
+                    stockHistory.addTransaction(_applicationDbContext, await GetCurrentUserAsync(), stock, model);
+                }
+            }
+
+            return Redirect("/Stocks/History");
         }
-*/
         #endregion
 
         [HttpGet]
@@ -124,8 +160,26 @@ namespace SE344.Controllers
                 ViewData["LowHighData"] = new List<JArray>();
             }
             model = await stockInfo.GetQuoteAsync(model);
+            model = await stockNote.getNote(_applicationDbContext, await GetCurrentUserAsync(), model);
 
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetNote(string symbol, string note)
+        {
+            var model = new Stock(symbol);
+            model.Note = note;
+            await stockNote.setNote(_applicationDbContext, await GetCurrentUserAsync(), model);
+
+            return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
+        }
+
+        private async Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            return await _userManager.FindByIdAsync(Context.User.GetUserId());
+        }
     }
+
 }

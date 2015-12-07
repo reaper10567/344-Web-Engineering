@@ -94,6 +94,9 @@ namespace SE344
             // Register application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IStockInformationService, YahooStockInformationService>();
+            services.AddTransient<IStockHistoryService, DbStockHistoryService>();
+            services.AddTransient<IStockNoteService, DbStockNoteService>();
 
             ServiceProvider = services.BuildServiceProvider();
         }
@@ -129,7 +132,7 @@ namespace SE344
 
             // Add authentication middleware to the request pipeline. You can configure options such as Id and Secret in the ConfigureServices method.
             // For more information see http://go.microsoft.com/fwlink/?LinkID=532715
-            app.UseFacebookAuthentication();
+             app.UseFacebookAuthentication();
 
             // Use Session
             app.UseSession();
