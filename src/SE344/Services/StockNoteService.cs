@@ -43,7 +43,7 @@ namespace SE344.Services
 
     public class DbStockNoteService : IStockNoteService {
         public async Task<Stock> getNote(ApplicationDbContext db, ApplicationUser user, Stock stock) {
-            string result = db.StockNotes.Where(x => (x.User == user) && (x.StockTicker == stock.Identifier)).Select(x => x.Note).FirstOrDefault();
+            string result = db.StockNotes.Where(x => (x.UserId.Equals(user.Id)) && (x.StockTicker == stock.Identifier)).Select(x => x.Note).FirstOrDefault();
             
             stock.Note = result;
             return stock;
@@ -51,23 +51,24 @@ namespace SE344.Services
 
         public async Task setNote(ApplicationDbContext db, ApplicationUser user, Stock stock)
         {
-            var note = db.StockNotes.Where(x => (x.User == user) && (x.StockTicker == stock.Identifier));
+            var note = db.StockNotes.Where(x => (x.UserId.Equals(user.Id)) && (x.StockTicker.Equals(stock.Identifier)));
 
             if (note.Count() == 0)
             {
                 var newNote = new StockNote();
                 newNote.Note = stock.Note;
                 newNote.StockTicker = stock.Identifier;
-                newNote.User = user;
+                newNote.UserId = user.Id;
 
-                db.Add(newNote);
+                db.StockNotes.Add(newNote);
             }
             else
             {
                 var a = note.First();
-                db.Update(a);
+                db.StockNotes.Update(a);
                 a.Note = stock.Note;
             }
+            db.SaveChanges();
         }
     }
 }

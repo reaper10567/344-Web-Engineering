@@ -66,31 +66,34 @@ namespace SE344.Services
     {
         public IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user)
         {
-            return db.StockTransactions.Where(x => x.User == user).AsEnumerable();
+            return db.StockTransactions.Where(x => x.UserId.Equals(user.Id));
         }
         public IEnumerable<StockTransaction> getTransactions(ApplicationDbContext db, ApplicationUser user, string tickerSymbol)
         {
-            return db.StockTransactions.Where(x => x.StockTicker == tickerSymbol && x.User == user);
+            return db.StockTransactions.Where(x => x.StockTicker.Equals(tickerSymbol) && x.UserId.Equals(user.Id));
         }
         public IEnumerable<string> getKnownIdentifiers(ApplicationDbContext db, ApplicationUser user)
         {
             var transactions = this.getTransactions(db, user);
-            var ids = transactions.Select(x => x.StockTicker).Distinct();
+            var ids = transactions.Select(x => x.StockTicker).Distinct().ToList();
 
-            var idPrice = ids.Select(x => Tuple.Create(x, transactions.Where(y => y.StockTicker == x).Select(y => y.TotalPrice).Sum()));
+            var idPrice = ids.Select(x => Tuple.Create(x, transactions.Where(y => y.StockTicker.Equals(x)).Select(y => y.TotalPrice).Sum()));
 
             return idPrice.OrderBy(x => x.Item2).Select(x => x.Item1).Take(6);
         }
         
         public void addTransaction(ApplicationDbContext db, ApplicationUser user, Stock stock, StockTransaction model) {
             model.StockTicker = stock.Identifier;
+            model.UserId = user.Id;
             db.StockTransactions.Add(model);
+            db.SaveChanges();
         }
 
         public void clear(ApplicationDbContext db, ApplicationUser user)
         {
-            var elemsToRemove = db.StockTransactions.Where(x => x.User == user);
+            var elemsToRemove = db.StockTransactions.Where(x => x.UserId.Equals(user.Id));
             elemsToRemove.Select(x => db.StockTransactions.Remove(x));
+            db.SaveChanges();
         }
     }
 }

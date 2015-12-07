@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "Stocks";
-    var transactions = ViewData["transactions"] as IEnumerable<KeyValuePair<string, StockTransaction>>;
+    var transactions = ViewData["transactions"] as IEnumerable<StockTransaction>;
 }
 <ul class="nav nav-tabs nav-justified">
     <li>
@@ -30,11 +30,11 @@
                 @foreach (var t in transactions)
                 {
                     <tr>
-                        <td>@t.Key</td>
-                        <td>@t.Value.TransactionDate</td>
-                        <td>@t.Value.PricePerShare</td>
-                        <td>@t.Value.NumShares</td>
-                        <td>@t.Value.TotalPrice</td>
+                        <td>@t.StockTicker</td>
+                        <td>@t.TransactionDate</td>
+                        <td>@t.PricePerShare</td>
+                        <td>@t.NumShares</td>
+                        <td>@t.TotalPrice</td>
                     </tr>
                 }
             </tbody>
