@@ -96,7 +96,16 @@ namespace SE344.Controllers
             Boolean.TryParse(form["allDay1"], out allDay);
             string name = form["Event Name"];
             var start = DateTime.Parse(form["StartDateTime"]);
-            var end = DateTime.Parse(form["EndDateTime"]);
+            DateTime end;
+            try
+            {
+                end = DateTime.Parse(form["EndDateTime"]);
+            }
+            catch (Exception)
+            {
+
+                end = start;
+            }
 
             var user = await GetCurrentUserAsync();
             var events = _db.Events.Include(e => e.User)
@@ -107,8 +116,8 @@ namespace SE344.Controllers
             {
                 e.AllDayEvent = allDay;
                 e.NameOfEvent = name;
-                e.StartTime = start;
-                e.EndTime = end;
+                e.StartTime = allDay ? start.Date : start;
+                e.EndTime = allDay ? e.StartTime.AddDays(1) : end;
                 _db.Events.Update(e);
                 //return RedirectToAction("Index");
             }
