@@ -50,7 +50,6 @@ namespace SE344.Controllers
 
         #region "transaction history"
 
-        // POST: /Stock/BuyStock
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Buy(string symbol, int shares)
@@ -62,6 +61,18 @@ namespace SE344.Controllers
             stockHistory.addTransaction(_applicationDbContext, await GetCurrentUserAsync(), stock, model);
 
             return Redirect("/Stocks/SearchStocks?symbol=" + symbol);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Buy2(string symbol, int shares, decimal price, DateTime time)
+        {
+            var stock = new Stock(symbol);
+
+            var model = new StockTransaction(time, price, shares);
+            stockHistory.addTransaction(_applicationDbContext, await GetCurrentUserAsync(), stock, model);
+
+            return Ok();
         }
 
         [HttpGet]

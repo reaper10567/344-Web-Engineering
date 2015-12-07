@@ -52,7 +52,7 @@
 </div>
 
 <div id="load-history-modal" class="modal fade">
-    <form asp-controller="Stocks" asp-action="LoadHistory" method="post" enctype="multipart/form-data" class="modal-dialog">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -64,8 +64,51 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-primary" value="Import" />
+                <button class="btn btn-primary" value="Import" >Import</button>
             </div>
         </div>
-    </form>
+    </div>
 </div><!-- /.modal -->
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_CalendarScriptsPartial"); }
+
+<script type="text/javascript">
+    function doLineUpload(results, parser) {
+        var row = results.data[0];
+        var data = "symbol=" + encodeURIComponent(row["Ticker Symbol"]) +
+                "&shares=" + encodeURIComponent(row["Num Shares"]) +
+                "&price=" + encodeURIComponent(row["Price Per Share"]) +
+                "&time=" + encodeURIComponent(row["DateTime"]);
+        
+        console.log(data, {});
+
+        var request = new XMLHttpRequest();
+        request.open("POST", "Buy2");
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.setRequestHeader("Content-length", data.length);
+        request.setRequestHeader("Connection", "close");
+        request.send(data);
+    }
+
+   
+    (function ($) {
+        $(document).ready(function () {
+            console.log("Document.ready");
+
+            $("#load-history-modal button.btn-primary").click(function (e) {
+                console.log("button.click");
+
+                $("#load-history-modal input[type=file]").parse({
+                    config: {
+                        delimiter: ",",
+                        newline: "\n",
+                        header: true,
+                        step: doLineUpload
+                    }
+                });
+            });
+        });
+    })(jQuery);
+</script>
+}
