@@ -201,7 +201,8 @@
                         };
                         
                         document.getElementById("saveEvent").onclick = function (e) {
-                            var jsonString = JSON.stringify(event);
+                            e.preventDefault();
+                            var jsonString = JSON.stringify(event, ['title', 'start', 'end', 'allDay']);
                             var textFileBlob = new Blob([jsonString], { type: 'text/json' });
                             var fileName = event.title;
                             var downloadLink = document.createElement("a");
